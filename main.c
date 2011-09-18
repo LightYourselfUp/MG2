@@ -1,8 +1,8 @@
-// Date: 24-8-2011 
-// Project: #MG v0.4 Ginebra(La convención)
+// Date: 16-9-2011 
+// Project: #MG v0.5
 // File: main.c
 // Versión: 002
-// Características: Portando versión 0.3 de Firmware a código con Bootloader
+// Características: Primera versión del firmware para v0.5
 
 #ifndef MAIN_C
 #define MAIN_C
@@ -11,9 +11,6 @@
 #include "timers.h"
 #include "delays.h"
 #include "ISR.h"
-#include "animations.h"
-#include "content.h"
-
 
         #pragma config PLLDIV   = 5         // (20 MHz crystal on PICDEM FS USB board)
         #pragma config CPUDIV   = OSC1_PLL2   
@@ -75,6 +72,11 @@ void main(void){
 	_SCL = 1;	//deshabilitamos clear de de los SRs
 	_G = 0;		//habilitamos salidas de los SRs
 
+	//Resetting ISR varibles
+	for(i = 0; i<=24; i++) {gBufferGreyscale[i] = i;}
+	for(i = 0; i<=4; i++) {mBufferMatrix[i] = 0xFF;}
+	iGreyscale = 0; iBufferMatrix = 0; iISR = 0; columnISR = 0; rowISR = 0; 
+
 	// Configurar Timer 0
 	OpenTimer0(TIMER_INT_ON & T0_8BIT & T0_SOURCE_INT & T0_PS_1_1); //Ejecución cada ~50uS
 	//Habilitar Interrupciones
@@ -85,7 +87,7 @@ void main(void){
 	
    while(1) 
    {
-	
+		for(i = 0; i<=24; i++) {gBufferGreyscale[i] = i;}
 
 	}//end while
 
