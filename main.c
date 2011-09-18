@@ -56,7 +56,7 @@
 #pragma code
 void main(void){
 
-	unsigned char i;
+	unsigned char i,j;
 	rom unsigned char *address;
 	//configurar salidas de control de los SRs
 	ADCON1 |= 0x0F;   // Todos las salidas AN como digitales
@@ -73,9 +73,9 @@ void main(void){
 	_G = 0;		//habilitamos salidas de los SRs
 
 	//Resetting ISR varibles
-	for(i = 0; i<=24; i++) {gBufferGreyscale[i] = i;}
+	for(i = 0; i<=24; i++) {gBufferGreyscale[i] = 0;}
 	for(i = 0; i<=4; i++) {mBufferMatrix[i] = 0xFF;}
-	iGreyscale = 0; iBufferMatrix = 0; iISR = 0; columnISR = 0; rowISR = 0; 
+	iGreyscale = 0; iISR = 0; columnISR = 0; rowISR = 0; 
 
 	// Configurar Timer 0
 	OpenTimer0(TIMER_INT_ON & T0_8BIT & T0_SOURCE_INT & T0_PS_1_1); //Ejecución cada ~50uS
@@ -87,7 +87,16 @@ void main(void){
 	
    while(1) 
    {
-		for(i = 0; i<=24; i++) {gBufferGreyscale[i] = i;}
+
+		for(j = 0; j<=30; j++){	
+			for(i = 0; i<=24; i++) {gBufferGreyscale[i] = j;}
+			Delay10KTCYx(30);	
+		}
+
+		for(j = 30; j>=1; j--){	
+			for(i = 0; i<=24; i++) {gBufferGreyscale[i] = j;}
+			Delay10KTCYx(30);	
+		}
 
 	}//end while
 

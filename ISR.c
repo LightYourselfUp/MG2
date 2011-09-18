@@ -5,7 +5,6 @@
 // Características: rutina ISR controla las interrupciones del timer
 
 #include "ISR.h"
-/*
 #pragma udata access accessram
 near ram unsigned char gBufferGreyscale[25];
 near ram unsigned char mBufferMatrix[5];
@@ -13,15 +12,7 @@ near ram unsigned char iGreyscale; //indice que se encarga de determinar a que n
 				//estamos activando los leds frames de 256 pasos.
 near ram unsigned char iBufferMatrix; // indice que permite recorrer gBufferGreyscale
 near ram unsigned char iISR, columnISR, rowISR; //Guardan el valor de fila y columna decodificado de iBufferMatrix
-*/
-unsigned char gBufferGreyscale[25];
-unsigned char mBufferMatrix[5];
-unsigned char iGreyscale; //indice que se encarga de determinar a que nivel de intensidad
-				//estamos activando los leds frames de 256 pasos.
-unsigned char iBufferMatrix; // indice que permite recorrer gBufferGreyscale
-unsigned char iISR, columnISR, rowISR; //Guardan el valor de fila y columna decodificado de iBufferMatrix
-
-
+near ram unsigned char sFSR0, sFSR0H, sFSR1, sFSR1H, sFSR2, sFSR2H, sBSR;
 
  //
  //******************************************************//
@@ -64,7 +55,22 @@ void YourHighPriorityISRCode()	{
 		// 1.1. Compare gBufferGreyscale with iGreyscale
 			// 1.1.1. Scan all the positions of gBufferGreyscale
 				_asm 
-
+						
+						MOVFF	BSR, sBSR
+						NOP
+						MOVFF	FSR0, sFSR0
+						NOP		
+						MOVFF	FSR0H, sFSR0H
+						NOP
+						MOVFF	FSR1, sFSR1
+						NOP
+						MOVFF	FSR1H, sFSR1H
+						NOP
+						MOVFF	FSR2, sFSR2
+						NOP
+						MOVFF	FSR2H, sFSR2H
+						NOP
+						
 						CLRF	FSR0, ACCESS // FSR0 is used as an index to scan G_BUFFER_MATRIX
 						CLRF	FSR0H, ACCESS
 						CLRF	FSR1, ACCESS
@@ -231,23 +237,35 @@ void YourHighPriorityISRCode()	{
 					XORWF	ADDRESS_I_GREYSCALE, W, ACCESS
 					BNZ		END
 					CLRF	ADDRESS_I_GREYSCALE, ACCESS
-					CLRF	ADDRESS_M_BUFFER_MATRIX_0, ACCESS
-					CLRF	ADDRESS_M_BUFFER_MATRIX_1, ACCESS
-					CLRF	ADDRESS_M_BUFFER_MATRIX_2, ACCESS
-					CLRF	ADDRESS_M_BUFFER_MATRIX_3, ACCESS
-					CLRF	ADDRESS_M_BUFFER_MATRIX_4, ACCESS
-						
+					MOVLW	0xFF
+					ADDWF	ADDRESS_M_BUFFER_MATRIX_0, F, ACCESS
+					ADDWF	ADDRESS_M_BUFFER_MATRIX_1, F, ACCESS
+					ADDWF	ADDRESS_M_BUFFER_MATRIX_2, F, ACCESS
+					ADDWF	ADDRESS_M_BUFFER_MATRIX_3, F, ACCESS
+					ADDWF	ADDRESS_M_BUFFER_MATRIX_4, F, ACCESS
 			END:
 				_endasm
 			
-
-
-		
-
-	
 	INTCONbits.TMR0IF = 0;
 	TMR0H = 0;
 	TMR0H = 0;
+
+	_asm
+						MOVFF	sBSR, BSR
+						NOP
+						MOVFF	sFSR0, FSR0
+						NOP	
+						MOVFF	sFSR0H, FSR0H
+						NOP
+						MOVFF	sFSR1, FSR1
+						NOP
+						MOVFF	sFSR1H, FSR1H
+						NOP
+						MOVFF	sFSR2, FSR2
+						NOP
+						MOVFF	sFSR2H, FSR2H
+						NOP
+	_endasm
 	}//if tmr0
 
 	
