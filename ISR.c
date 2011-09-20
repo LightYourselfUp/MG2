@@ -13,6 +13,8 @@ near ram unsigned char iGreyscale; //indice que se encarga de determinar a que n
 near ram unsigned char iBufferMatrix; // indice que permite recorrer gBufferGreyscale
 near ram unsigned char iISR, columnISR, rowISR; //Guardan el valor de fila y columna decodificado de iBufferMatrix
 near ram unsigned char sFSR0, sFSR0H, sFSR1, sFSR1H, sFSR2, sFSR2H, sBSR;
+near ram unsigned char gPreBufferGreyscale[25];
+
 
  //
  //******************************************************//
@@ -237,6 +239,13 @@ void YourHighPriorityISRCode()	{
 					XORWF	ADDRESS_I_GREYSCALE, W, ACCESS
 					BNZ		END
 					CLRF	ADDRESS_I_GREYSCALE, ACCESS
+				_endasm
+
+			for( iBufferMatrix = 0; iBufferMatrix <=24 ; iBufferMatrix++ ){
+				gBufferGreyscale[iBufferMatrix] = gPreBufferGreyscale[iBufferMatrix];
+				}
+			
+				_asm
 					MOVLW	0xFF
 					ADDWF	ADDRESS_M_BUFFER_MATRIX_0, F, ACCESS
 					ADDWF	ADDRESS_M_BUFFER_MATRIX_1, F, ACCESS

@@ -40,7 +40,11 @@
 
 #define MAX_NUM_PIXELS	25
 #define MAX_NUM_COLUMNS	5
-#define MAX_NUM_GREYSCALE	254
+#define MAX_NUM_GREYSCALE	255
+
+#define BRIGHTNESS_MIN 1
+#define BRIGHTNESS_MID 127
+#define BRIGHTNESS_MAX 254
 
 //assembly definitions
 #define	W	0
@@ -89,6 +93,7 @@ extern ram near unsigned char iGreyscale; //indice que se encarga de determinar 
 extern ram near unsigned char iBufferMatrix; // indice que permite recorrer gBufferGreyscale
 extern near ram unsigned char iISR, columnISR, rowISR; //Guardan el valor de fila y columna decodificado de iBufferMatrix
 extern near ram unsigned char sFSR0, sFSR0H, sFSR1, sFSR1H, sFSR2, sFSR2H, sBSR;
+extern near ram unsigned char gPreBufferGreyscale[25];
 
 /* Definicion de funciones */
 void YourHighPriorityISRCode();

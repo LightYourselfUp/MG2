@@ -11,6 +11,8 @@
 #include "timers.h"
 #include "delays.h"
 #include "ISR.h"
+#include "draw.h"
+
 
         #pragma config PLLDIV   = 5         // (20 MHz crystal on PICDEM FS USB board)
         #pragma config CPUDIV   = OSC1_PLL2   
@@ -85,18 +87,35 @@ void main(void){
 	//Write timer0
 	WriteTimer0(0);
 	
+	/*
+	drawPoint(1,1,0);
+	drawPoint(1,2,64);
+	drawPoint(1,3,128);
+	drawPoint(1,4,196);
+	drawPoint(1,5,255);
+
+	drawPoint(2,1,251);
+	drawPoint(2,2,252);
+	drawPoint(2,3,253);
+	drawPoint(2,4,254);
+	drawPoint(2,5,255); */
+
    while(1) 
    {
 
-		for(j = 0; j<=30; j++){	
-			for(i = 0; i<=24; i++) {gBufferGreyscale[i] = j;}
-			Delay10KTCYx(30);	
+		for(j = 0, i = 254; j<=254; j++, i--){	
+			drawSquare(1,1,5,5,j);
+			drawSquare(2,2,4,4,i);
+			drawPoint(3,3,j);
+			//Delay10KTCYx(3);	
 		}
 
-		for(j = 30; j>=1; j--){	
-			for(i = 0; i<=24; i++) {gBufferGreyscale[i] = j;}
-			Delay10KTCYx(30);	
-		}
+		for(j = 0, i = 254; j<=254; j++, i--){		
+			drawSquare(1,1,5,5,i);
+			drawSquare(2,2,4,4,j);
+			drawPoint(3,3,i);
+			//Delay10KTCYx(3);
+		}	
 
 	}//end while
 
