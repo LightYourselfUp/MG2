@@ -75,7 +75,7 @@ void main(void){
 	_G = 0;		//habilitamos salidas de los SRs
 
 	//Resetting ISR varibles
-	for(i = 0; i<=24; i++) {gBufferGreyscale[i] = 0;}
+	for(i = 0; i<=24; i++) {gBufferGreyscale[i] = i; gPreBufferGreyscale[i] = i;}
 	for(i = 0; i<=4; i++) {mBufferMatrix[i] = 0xFF;}
 	iGreyscale = 0; iISR = 0; columnISR = 0; rowISR = 0; 
 
@@ -103,21 +103,21 @@ void main(void){
    while(1) 
    {
 
-		for(j = 0, i = 254; j<=254; j++, i--){	
+		for(j = 0, i = 300; j<=300; j++, i--){	
 			drawSquare(1,1,5,5,j);
 			drawSquare(2,2,4,4,i);
 			drawPoint(3,3,j);
-			//Delay10KTCYx(3);	
+			Delay10KTCYx(10);	
 		}
 
-		for(j = 0, i = 254; j<=254; j++, i--){		
+		for(j = 0, i = 300; j<=300; j++, i--){		
 			drawSquare(1,1,5,5,i);
 			drawSquare(2,2,4,4,j);
 			drawPoint(3,3,i);
-			//Delay10KTCYx(3);
+			Delay10KTCYx(10); 
 		}	
 
-	}//end while
+	} //end while
 
 CloseTimer0();
 }//end main

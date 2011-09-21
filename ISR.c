@@ -5,15 +5,17 @@
 // Características: rutina ISR controla las interrupciones del timer
 
 #include "ISR.h"
+ram unsigned int gPreBufferGreyscale[25];
+
 #pragma udata access accessram
-near ram unsigned char gBufferGreyscale[25];
+near ram unsigned int gBufferGreyscale[25];
 near ram unsigned char mBufferMatrix[5];
-near ram unsigned char iGreyscale; //indice que se encarga de determinar a que nivel de intensidad
+near ram unsigned int iGreyscale; //indice que se encarga de determinar a que nivel de intensidad
 				//estamos activando los leds frames de 256 pasos.
 near ram unsigned char iBufferMatrix; // indice que permite recorrer gBufferGreyscale
 near ram unsigned char iISR, columnISR, rowISR; //Guardan el valor de fila y columna decodificado de iBufferMatrix
 near ram unsigned char sFSR0, sFSR0H, sFSR1, sFSR1H, sFSR2, sFSR2H, sBSR;
-near ram unsigned char gPreBufferGreyscale[25];
+
 
 
  //
@@ -57,22 +59,23 @@ void YourHighPriorityISRCode()	{
 		// 1.1. Compare gBufferGreyscale with iGreyscale
 			// 1.1.1. Scan all the positions of gBufferGreyscale
 				_asm 
-						
-						MOVFF	BSR, sBSR
+						//Saving BSR, and FSRs
+						/*MOVFF	BSR, sBSR
 						NOP
 						MOVFF	FSR0, sFSR0
-						NOP		
+						NOP*/		
 						MOVFF	FSR0H, sFSR0H
 						NOP
 						MOVFF	FSR1, sFSR1
 						NOP
 						MOVFF	FSR1H, sFSR1H
-						NOP
+						NOP/*
 						MOVFF	FSR2, sFSR2
 						NOP
 						MOVFF	FSR2H, sFSR2H
-						NOP
+						NOP*/
 						
+						//Resetting Values
 						CLRF	FSR0, ACCESS // FSR0 is used as an index to scan G_BUFFER_MATRIX
 						CLRF	FSR0H, ACCESS
 						CLRF	FSR1, ACCESS
@@ -82,9 +85,20 @@ void YourHighPriorityISRCode()	{
 
 				SCAN_G_BUFFER_MATRIX:
 						//ADDRESS_I_BUFFER_MATRIX represents directly the memory address for G_BUFFER_MATRIX
-						MOVFF	POSTINC0, WREG
+						MOVFF	POSTINC0, WREG	//Loading WREG with low part of gBufferGreyscale[0..24]
+												//and postincrementing index FSR0
 						NOP
-						SUBWF	ADDRESS_I_GREYSCALE, W, ACCESS
+						SUBWF	ADDRESS_I_GREYSCALE_LOW, W, ACCESS //Comparing low part gBufferGreyscale and iGreyscale
+
+						MOVFF	POSTINC0, WREG	//Loading WREG with high part of gBufferGreyscale[0..24]
+												//Doesnt affect STATUS zero byte, so next BNZ checks previous 
+												//assembly line STATUS results 
+						NOP						
+
+						BNZ		UPDATE_COLUMN_ROW
+				
+						SUBWF	ADDRESS_I_GREYSCALE_HIGH, W, ACCESS //Comparing high part gBufferGreyscale and iGreyscale
+
 						BNZ		UPDATE_COLUMN_ROW
 
 						// 1.1.X. If equal turn off the pixel , everything is on until it detects samevalue
@@ -234,11 +248,32 @@ void YourHighPriorityISRCode()	{
 					BCF		LATD, aRCK, ACCESS
 
 		// 1.2. Control, increment and reset of iGreyscale of mBufferMatrix
-					INCF	ADDRESS_I_GREYSCALE, F, ACCESS
-					MOVLW	MAX_NUM_GREYSCALE
-					XORWF	ADDRESS_I_GREYSCALE, W, ACCESS
+					
+					MOVLW	0x01
+					XORWF	ADDRESS_I_GREYSCALE_HIGH, W, ACCESS
+					BNZ		INC_LOW
+
+					INCF	ADDRESS_I_GREYSCALE_LOW, F, ACCESS
+					MOVLW	MAX_NUM_GREYSCALE_LOW
+					XORWF	ADDRESS_I_GREYSCALE_LOW, W, ACCESS
 					BNZ		END
-					CLRF	ADDRESS_I_GREYSCALE, ACCESS
+					BRA		RESET_TOTAL
+
+			INC_LOW:
+					INCF	ADDRESS_I_GREYSCALE_LOW, F, ACCESS
+					MOVLW	0xFF
+					XORWF	ADDRESS_I_GREYSCALE_LOW, W, ACCESS
+					BNZ		END
+
+					//CLRF	ADDRESS_I_GREYSCALE_LOW, ACCESS
+					INCF	ADDRESS_I_GREYSCALE_HIGH, F, ACCESS
+					MOVLW	MAX_NUM_GREYSCALE_HIGH
+					XORWF	ADDRESS_I_GREYSCALE_HIGH, W, ACCESS
+					BNZ		END
+
+			RESET_TOTAL:		
+					CLRF	ADDRESS_I_GREYSCALE_LOW, ACCESS
+					CLRF	ADDRESS_I_GREYSCALE_HIGH, ACCESS
 				_endasm
 
 			for( iBufferMatrix = 0; iBufferMatrix <=24 ; iBufferMatrix++ ){
@@ -256,12 +291,12 @@ void YourHighPriorityISRCode()	{
 				_endasm
 			
 	INTCONbits.TMR0IF = 0;
-	TMR0H = 0;
+	TMR0L = 0x2F;
 	TMR0H = 0;
 
 	_asm
-						MOVFF	sBSR, BSR
-						NOP
+					/*	MOVFF	sBSR, BSR
+						NOP*/
 						MOVFF	sFSR0, FSR0
 						NOP	
 						MOVFF	sFSR0H, FSR0H
@@ -269,11 +304,11 @@ void YourHighPriorityISRCode()	{
 						MOVFF	sFSR1, FSR1
 						NOP
 						MOVFF	sFSR1H, FSR1H
-						NOP
+						NOP/*
 						MOVFF	sFSR2, FSR2
 						NOP
 						MOVFF	sFSR2H, FSR2H
-						NOP
+						NOP*/
 	_endasm
 	}//if tmr0
 

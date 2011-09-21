@@ -13,7 +13,7 @@
 
 /* Definicion de funciones */
 void deleteMatrix(void);
-void drawPoint(const unsigned char fila, const unsigned char columna, const unsigned char pwm);
-void drawLine(unsigned char F_1,unsigned char C_1,unsigned char F_2,unsigned char C_2, unsigned char pwm);
-void drawSquare(unsigned char F_inf,const unsigned char C_inf,const unsigned char F_sup,const unsigned char C_sup, const unsigned char pwm);
+void drawPoint(const unsigned char fila, const unsigned char columna, const unsigned int pwm);
+void drawLine(unsigned char F_1,unsigned char C_1,unsigned char F_2,unsigned char C_2, unsigned int pwm);
+void drawSquare(unsigned char F_inf,const unsigned char C_inf,const unsigned char F_sup,const unsigned char C_sup, const unsigned int pwm);
 #endif
