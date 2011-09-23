@@ -273,7 +273,7 @@ void YourHighPriorityISRCode()	{
 				_endasm
 			
 	INTCONbits.TMR0IF = 0;
-	TMR0L = 0;
+	TMR0L = 0x2F;
 	TMR0H = 0;
 
 	_asm

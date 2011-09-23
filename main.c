@@ -121,9 +121,26 @@ void main(void){
 		switch (iMenu){
 
 			case 0:
-					if (FIRST == 0){deleteMatrix(); drawLine(1,1,5,1,15);}
-					(FIRST = 1);
-					break;
+					for(j = 130, i = 254; j<=254; j++, i--){	
+						drawSquare(1,1,5,5,j);
+						drawSquare(2,2,4,4,i);
+						drawPoint(3,3,j);
+						Delay10KTCYx(100);
+						if(iMenu != 0){break;}	
+					}
+						if(iMenu != 0){break;}	
+					for(j = 130, i = 254; j<=254; j++, i--){		
+						drawSquare(1,1,5,5,i);
+						drawSquare(2,2,4,4,j);
+						drawPoint(3,3,i);
+						Delay10KTCYx(100);
+						if(iMenu != 0){break;}
+					}
+						if(iMenu != 0){break;}	// It allows to break the case during the executation	
+	
+					//if (FIRST == 0){deleteMatrix(); drawLine(1,1,5,1,15);}
+					//(FIRST = 1);
+					//break;
 			case 1:
 					if (SECOND == 0){deleteMatrix(); drawLine(1,2,5,2,80);}
 					(SECOND = 1);
