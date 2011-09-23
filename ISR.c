@@ -14,6 +14,7 @@ near ram unsigned char iBufferMatrix; // indice que permite recorrer gBufferGrey
 near ram unsigned char iISR, columnISR, rowISR; //Guardan el valor de fila y columna decodificado de iBufferMatrix
 near ram unsigned char sFSR0, sFSR0H, sFSR1, sFSR1H, sFSR2, sFSR2H, sBSR;
 near ram unsigned char gPreBufferGreyscale[25];
+near ram unsigned char iMenu, iTimer1, FIRST, SECOND, THIRD, FOURTH, FIFTH;
 
 
  //
@@ -164,7 +165,7 @@ void YourHighPriorityISRCode()	{
 					BSF		LATB, aSI4, ACCESS
 					BTFSC	ADDRESS_M_BUFFER_MATRIX_4, 0, ACCESS
 					BSF		LATB, aSI5, ACCESS
-					//SCK clock 4SRs
+					//SCK clock 4SRs_0
 					BSF		LATD, aSCK, ACCESS
 					BCF		LATD, aSCK, ACCESS
 
@@ -179,7 +180,7 @@ void YourHighPriorityISRCode()	{
 					BSF		LATB, aSI4, ACCESS
 					BTFSC	ADDRESS_M_BUFFER_MATRIX_4, 1, ACCESS
 					BSF		LATB, aSI5, ACCESS
-					//SCK clock 4SRs
+					//SCK clock 4SRs_1
 					BSF		LATD, aSCK, ACCESS
 					BCF		LATD, aSCK, ACCESS
 
@@ -194,7 +195,7 @@ void YourHighPriorityISRCode()	{
 					BSF		LATB, aSI4, ACCESS
 					BTFSC	ADDRESS_M_BUFFER_MATRIX_4, 2, ACCESS
 					BSF		LATB, aSI5, ACCESS
-					//SCK clock 4SRs
+					//SCK clock 4SRs_2
 					BSF		LATD, aSCK, ACCESS
 					BCF		LATD, aSCK, ACCESS
 
@@ -209,7 +210,7 @@ void YourHighPriorityISRCode()	{
 					BSF		LATB, aSI4, ACCESS
 					BTFSC	ADDRESS_M_BUFFER_MATRIX_4, 3, ACCESS
 					BSF		LATB, aSI5, ACCESS
-					//SCK clock 4SRs
+					//SCK clock 4SRs_3
 					BSF		LATD, aSCK, ACCESS
 					BCF		LATD, aSCK, ACCESS
 
@@ -224,7 +225,7 @@ void YourHighPriorityISRCode()	{
 					BSF		LATB, aSI4, ACCESS
 					BTFSC	ADDRESS_M_BUFFER_MATRIX_4, 4, ACCESS
 					BSF		LATB, aSI5, ACCESS
-					//SCK clock 4SRs
+					//SCK clock 4SRs_4
 					BSF		LATD, aSCK, ACCESS
 					BCF		LATD, aSCK, ACCESS
 
@@ -239,24 +240,40 @@ void YourHighPriorityISRCode()	{
 					XORWF	ADDRESS_I_GREYSCALE, W, ACCESS
 					BNZ		END
 					CLRF	ADDRESS_I_GREYSCALE, ACCESS
-				_endasm
+				//_endasm
 
-			for( iBufferMatrix = 0; iBufferMatrix <=24 ; iBufferMatrix++ ){
-				gBufferGreyscale[iBufferMatrix] = gPreBufferGreyscale[iBufferMatrix];
-				}
-			
-				_asm
+			//for( iBufferMatrix = 0; iBufferMatrix <=24 ; iBufferMatrix++ ){
+			//	gBufferGreyscale[iBufferMatrix] = gPreBufferGreyscale[iBufferMatrix];
+			//	}
+					
+					CLRF	FSR0, ACCESS	//Address for gBufferGreyscale is 0x00
+					MOVLW	ADDRESS_G_PRE_BUFFER_GREYSCALE_0
+					MOVWF	FSR1, ACCESS
+					NOP
+
+			LOOP_COPYING_BUFFERS:
+		
+					MOVLW	MAX_NUM_PIXELS
+					SUBWF	FSR0, W, ACCESS
+					MOVFF	POSTINC1, POSTINC0
+					NOP
+					BC		RESET_M_BUFFER_MATRIX
+					BRA		LOOP_COPYING_BUFFERS
+
+			RESET_M_BUFFER_MATRIX:
+		
+				//_asm
 					MOVLW	0xFF
-					ADDWF	ADDRESS_M_BUFFER_MATRIX_0, F, ACCESS
-					ADDWF	ADDRESS_M_BUFFER_MATRIX_1, F, ACCESS
-					ADDWF	ADDRESS_M_BUFFER_MATRIX_2, F, ACCESS
-					ADDWF	ADDRESS_M_BUFFER_MATRIX_3, F, ACCESS
-					ADDWF	ADDRESS_M_BUFFER_MATRIX_4, F, ACCESS
+					MOVWF	ADDRESS_M_BUFFER_MATRIX_0, ACCESS
+					MOVWF	ADDRESS_M_BUFFER_MATRIX_1, ACCESS
+					MOVWF	ADDRESS_M_BUFFER_MATRIX_2, ACCESS
+					MOVWF	ADDRESS_M_BUFFER_MATRIX_3, ACCESS
+					MOVWF	ADDRESS_M_BUFFER_MATRIX_4, ACCESS
 			END:
 				_endasm
 			
 	INTCONbits.TMR0IF = 0;
-	TMR0H = 0;
+	TMR0L = 0;
 	TMR0H = 0;
 
 	_asm
@@ -277,7 +294,31 @@ void YourHighPriorityISRCode()	{
 	_endasm
 	}//if tmr0
 
-	
+	if(PIR1bits.TMR1IF==1){
+				
+		if (iTimer1 == 0){
+			if(BOOTLOADER_BUTTON == ON_BOOT_BUTTON){
+				iTimer1++;
+				iMenu++;
+			}//if	
+			if (iMenu == MENU_MAX){
+				iMenu = 0;
+				FIRST = 0;
+				SECOND = 0;
+				THIRD = 0;
+				FOURTH = 0;
+				FIFTH = 0;
+			}		
+		}
+		else{
+			if (iTimer1 < 6)iTimer1++;
+			else iTimer1 = 0;
+		}	
+
+		PIR1bits.TMR1IF=0;
+		WriteTimer1(0x00 & 0x00);		
+	}
+
 }	//This return will be a "retfie fast", since this is in a #pragma interrupt section 
 
 #pragma interruptlow YourLowPriorityISRCode

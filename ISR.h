@@ -27,6 +27,10 @@
 #define SI4 LATBbits.LATB3
 #define SI5 LATBbits.LATB4
 
+#define BOOTLOADER_BUTTON	PORTEbits.RE0
+#define ON_BOOT_BUTTON	0
+#define MENU_MAX	5
+
 //Used in assembly assignations
 #define aSI1 0
 #define aSI2 1
@@ -80,6 +84,7 @@
 #define SAVE_SFR1H	0x26
 #define SAVE_SFR2	0x27
 #define SAVE_SFR2H	0x28
+#define ADDRESS_G_PRE_BUFFER_GREYSCALE_0	0x2A
 	
 #define REMAPPED_RESET_VECTOR_ADDRESS			0x1000
 #define REMAPPED_HIGH_INTERRUPT_VECTOR_ADDRESS	0x1008
@@ -94,6 +99,7 @@ extern ram near unsigned char iBufferMatrix; // indice que permite recorrer gBuf
 extern near ram unsigned char iISR, columnISR, rowISR; //Guardan el valor de fila y columna decodificado de iBufferMatrix
 extern near ram unsigned char sFSR0, sFSR0H, sFSR1, sFSR1H, sFSR2, sFSR2H, sBSR;
 extern near ram unsigned char gPreBufferGreyscale[25];
+extern near ram unsigned char iMenu, iTimer1, FIRST, SECOND, THIRD, FOURTH, FIFTH;	// index Main.c menu
 
 /* Definicion de funciones */
 void YourHighPriorityISRCode();
