@@ -90,6 +90,10 @@
 #define REMAPPED_HIGH_INTERRUPT_VECTOR_ADDRESS	0x1008
 #define REMAPPED_LOW_INTERRUPT_VECTOR_ADDRESS	0x1018
 
+#define MAX_INDEX_G_BUFFER_GREYSCALE	24
+#define MAX_INDEX_M_BUFFER_MATRIX	4
+#define RESET_M_BUFFER_MATRIX 0xFF
+
 /* Definición variables */
 extern ram near unsigned char gBufferGreyscale[25];
 extern ram near unsigned char mBufferMatrix[5];
