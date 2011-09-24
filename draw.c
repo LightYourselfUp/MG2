@@ -16,7 +16,7 @@ Comments:
 
 /* Functions prototypes *********************************************/
 // Converts a lineal brightness value to a gamma corrected value for the LEDs in the matrix
-const unsigned char gammaCorrection(const unsigned char brightness);
+unsigned char gammaCorrection(unsigned char brightness);
 
 // Returns the absolute value of a number
 signed char abs(signed char number);
@@ -32,7 +32,7 @@ unsigned char j;
 }
 
 /* Draw point */
-void drawPoint(const unsigned char x, const unsigned char y, const unsigned char brightness){
+void drawPoint(unsigned char x, unsigned char y, unsigned char brightness){
 
 	gPreBufferGreyscale[(x - 1) * 5 + y - 1] = gammaCorrection(brightness);
 }
@@ -44,7 +44,7 @@ unsigned short int altura=0,base=0,n=0,m=0,xRef=0,yRef=0,x=0,y=0,p=0;
 signed char d=0, steep, t, deltax, deltay, error, ystep;
 
 //Calcule of base, height and line's reference point
-if (x1 < x2){altura = x2-x1;
+if (x1 < x2){altura = x2 - x1;
                xRef = x1;}
 else{altura = x1-x2;
      xRef = x2;}
@@ -91,7 +91,7 @@ else{
 }
 
 /* Draw square */
-void drawSquare (unsigned char xBottom, const unsigned char yBottom, const unsigned char xTop,const unsigned char yTop, const unsigned char brightness){
+void drawSquare (unsigned char xBottom, unsigned char yBottom, unsigned char xTop, unsigned char yTop, unsigned char brightness){
 	unsigned char base, altura;
 	base = yTop - yBottom;
 	altura = xTop - xBottom;
@@ -112,7 +112,7 @@ const rom unsigned char gammaCorrectionVector[]={
 155,158,162,165,169,173,177,181,184,189,193,197,201,206,210,215,219,224,229,234,239,245,250,253,254};
 
 /* Gamma correction */
-const unsigned char gammaCorrection(const unsigned char brightness){
+unsigned char gammaCorrection(unsigned char brightness){
 return gammaCorrectionVector[brightness];
 }
 

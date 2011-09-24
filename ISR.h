@@ -1,56 +1,60 @@
-// Date: 22 - 08 - 2011 
-// Project: #MG v0.4 Ginebra(La convención)
-// File: ISR.h
-// Versión: 01
-// Características: Cabecera de descripción de ISR
+/*********************************************************************
+Date: 24-9-2011 
+Project: #MG
+Version: 0.5 DanUp
+File: ISR.h
+Compiler: MPLAB C18
+Processor: 18F4550
+Company: LightYourselUp
+Contact: we@lightyourselfup.com
+Comments: 
+*********************************************************************/
 
-#ifndef ISR_H //Esto evita reincluir multiples veces el mismo archivo
+#ifndef ISR_H
 #define ISR_H
 
-/* Inclusión de archivos */
+
+/* Files included ***************************************************/
 #include <p18cxxx.h>
 #include <p18f4550.h>
-//#include    <p18f4550.inc>
-//#include "draw.h"
 #include "timers.h"
 
-#define RCK LATDbits.LATD5
-#define aRCK 5
-#define _G LATDbits.LATD4
-#define SCK LATDbits.LATD6
-#define aSCK 6
-#define _SCL LATDbits.LATD7
 
+/* Definitions ******************************************************/
+// Shift Register control pins definitions. "a" prefix is us to define the bit number to use in assembly
+#define	RCK		LATDbits.LATD5
+#define	aRCK	5
+#define	_G		LATDbits.LATD4
+#define	SCK		LATDbits.LATD6
+#define aSCK	6
+#define	_SCL	LATDbits.LATD7
+
+// Shift Register Inputs definitions. "a" prefix is us to define the bit number to use in assembly
 #define SI1 LATBbits.LATB0
 #define SI2 LATBbits.LATB1
 #define SI3 LATBbits.LATB2
 #define SI4 LATBbits.LATB3
 #define SI5 LATBbits.LATB4
-
-#define BOOTLOADER_BUTTON	PORTEbits.RE0
-#define ON_BOOT_BUTTON	0
-#define MENU_MAX	5
-
-//Used in assembly assignations
 #define aSI1 0
 #define aSI2 1
 #define aSI3 2
 #define aSI4 3
 #define aSI5 4
 
-#define	TIME_MAX	255
-#define	TIME_MID	24
-#define	TIME_LOW	10
+// Bootloader button definitoins
+#define BOOTLOADER_BUTTON	PORTEbits.RE0
+#define ON_BOOT_BUTTON	0
 
+// Maximum values and reset definitions
+#define MAX_MENU	5
 #define MAX_NUM_PIXELS	25
 #define MAX_NUM_COLUMNS	5
 #define MAX_NUM_GREYSCALE	255
+#define MAX_INDEX_G_BUFFER_GREYSCALE	24
+#define MAX_INDEX_M_BUFFER_MATRIX	4
+#define RESET_M_BUFFER_MATRIX 0xFF
 
-#define BRIGHTNESS_MIN 1
-#define BRIGHTNESS_MID 127
-#define BRIGHTNESS_MAX 254
-
-//assembly definitions
+// Assembly definitions
 #define	W	0
 #define	F	1
 #define ACCESS	0
@@ -66,49 +70,38 @@
 #define FSR2	0xFD9
 #define FSR2H	0xFDA
 
-//data memory addresses for ISR variables
+
+// Data memory addresses for ISR variables
 #define ADDRESS_G_BUFFER_GREYSCALE_0	0x00
 #define ADDRESS_M_BUFFER_MATRIX_0	0x19
 #define ADDRESS_M_BUFFER_MATRIX_1	0x1A
 #define ADDRESS_M_BUFFER_MATRIX_2	0x1B
 #define ADDRESS_M_BUFFER_MATRIX_3	0x1C
 #define ADDRESS_M_BUFFER_MATRIX_4	0x1D
-#define ADDRESS_I_GREYSCALE	0x1E
-#define	ADDRESS_I_BUFFER_MATRIX	0x1F
-#define ADDRESS_I_ISR	0x20
-#define ADDRESS_COLUMN_ISR	0x21
-#define ADDRESS_ROW_ISR	0x22
-#define SAVE_SFR0	0x23			
-#define SAVE_SFR0H	0x24
-#define SAVE_SFR1	0x25
-#define SAVE_SFR1H	0x26
-#define SAVE_SFR2	0x27
-#define SAVE_SFR2H	0x28
-#define ADDRESS_G_PRE_BUFFER_GREYSCALE_0	0x2A
-	
+#define ADDRESS_G_PRE_BUFFER_GREYSCALE_0	0x25
+
+// Interrupt vector addresses for boatloader remapping 	
 #define REMAPPED_RESET_VECTOR_ADDRESS			0x1000
 #define REMAPPED_HIGH_INTERRUPT_VECTOR_ADDRESS	0x1008
 #define REMAPPED_LOW_INTERRUPT_VECTOR_ADDRESS	0x1018
 
-#define MAX_INDEX_G_BUFFER_GREYSCALE	24
-#define MAX_INDEX_M_BUFFER_MATRIX	4
-#define RESET_M_BUFFER_MATRIX 0xFF
 
-/* Definición variables */
-extern ram near unsigned char gBufferGreyscale[25];
-extern ram near unsigned char mBufferMatrix[5];
-extern ram near unsigned char iGreyscale; //indice que se encarga de determinar a que nivel de intensidad
-				//estamos activando los leds frames de 256 pasos.
-extern ram near unsigned char iBufferMatrix; // indice que permite recorrer gBufferGreyscale
-extern near ram unsigned char iISR, columnISR, rowISR; //Guardan el valor de fila y columna decodificado de iBufferMatrix
-extern near ram unsigned char sFSR0, sFSR0H, sFSR1, sFSR1H, sFSR2, sFSR2H, sBSR;
-extern near ram unsigned char gPreBufferGreyscale[25];
-extern near ram unsigned char iMenu, iTimer1, FIRST, SECOND, THIRD, FOURTH, FIFTH;	// index Main.c menu
+/* Extern variables *************************************************/
 
-/* Definicion de funciones */
+
+extern near ram unsigned char gBufferGreyscale[25];	// Used to draw the information that we want to display in the matrix.
+extern near ram unsigned char mBufferMatrix[5];	// Buffered used to decode gBufferGreyscale brightness and send "firmware" PWM through SIx
+extern near ram unsigned char iGreyscale;	// Index used to control the brightness step for the "firmware" pwm
+extern near ram unsigned char gPreBufferGreyscale[25];	//Used to pre draw the information that we want to display in the matrix. 
+extern near ram unsigned char iMenu;	// Keeps the main MENU value
+extern near ram unsigned char iTimer1;	// Used to generate a forced delay between each time iMenu can be increment after pressing the bootloader button
+extern near ram unsigned char FIRST, SECOND, THIRD, FOURTH, FIFTH; // These variables are used as boolean to executed just once the corresponding MENU value
+
+
+/* Functions prototypes *********************************************/
 void YourHighPriorityISRCode();
 void YourLowPriorityISRCode();
-extern void _startup (void);        // See c018i.c in your C18 compiler dir
 void rutina_ISR(void);
+extern void _startup (void);        // See c018i.c in your C18 compiler dir
 
 #endif

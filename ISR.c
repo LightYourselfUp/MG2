@@ -1,26 +1,37 @@
-// Date: 22 - 08 - 2011 
-// Project: #MG v0.4 Ginebra(La convención)
-// File: ISR.c
-// Versión: 01
-// Características: rutina ISR controla las interrupciones del timer
+/*********************************************************************
+Date: 24-9-2011 
+Project: #MG
+Version: 0.5 DanUp
+File: ISR.c
+Compiler: MPLAB C18
+Processor: 18F4550
+Company: LightYourselUp
+Contact: we@lightyourselfup.com
+Comments: 
+*********************************************************************/
 
+
+/* Files included ***************************************************/
 #include "ISR.h"
+
+
+/* Variables ********************************************************/
+//Defining variables in access ram section 0x00..0x5F
 #pragma udata access accessram
-near ram unsigned char gBufferGreyscale[25];
-near ram unsigned char mBufferMatrix[5];
-near ram unsigned char iGreyscale; //indice que se encarga de determinar a que nivel de intensidad
-				//estamos activando los leds frames de 256 pasos.
-near ram unsigned char iBufferMatrix; // indice que permite recorrer gBufferGreyscale
-near ram unsigned char iISR, columnISR, rowISR; //Guardan el valor de fila y columna decodificado de iBufferMatrix
-near ram unsigned char sFSR0, sFSR0H, sFSR1, sFSR1H, sFSR2, sFSR2H, sBSR;
-near ram unsigned char gPreBufferGreyscale[25];
-near ram unsigned char iMenu, iTimer1, FIRST, SECOND, THIRD, FOURTH, FIFTH;
+near ram unsigned char gBufferGreyscale[25];	// Used to draw the information that we want to display in the matrix.
+near ram unsigned char mBufferMatrix[5];	// Buffered used to decode gBufferGreyscale brightness and send "firmware" PWM through SIx
+near ram unsigned char iGreyscale;	// Index used to control the brightness step for the "firmware" pwm
+near ram unsigned char columnISR, rowISR; // Used to decode the gGrescale vector position(0..24) into rows(1..5) and columns(1..5)
+near ram unsigned char sFSR0, sFSR0H, sFSR1, sFSR1H;	// Used to save FSRs values during TIMER0 interrupt execution
+near ram unsigned char gPreBufferGreyscale[25];	//Used to pre draw the information that we want to display in the matrix. 
+near ram unsigned char iMenu;	// Keeps the main MENU value
+near ram unsigned char iTimer1;	// Used to generate a forced delay between each time iMenu can be increment after pressing the bootloader button
+near ram unsigned char FIRST, SECOND, THIRD, FOURTH, FIFTH; // These variables are used as boolean to executed just once the corresponding MENU value
 
 
- //
- //******************************************************//
- //    Remapping ISRs
- //******************************************************//
+ /* Remapping ISRs **************************************************/
+
+//This part is to avoid overlapping the interrupt vectors with the bootloaders code
 #pragma code REMAPPED_RESET_VECTOR = REMAPPED_RESET_VECTOR_ADDRESS
 void _reset (void){
     _asm goto _startup _endasm
@@ -42,14 +53,8 @@ void High_ISR (void)	{
 void Low_ISR (void){
      _asm goto REMAPPED_LOW_INTERRUPT_VECTOR_ADDRESS _endasm
 }
- //
- //******************************************************//
- //    Rutina de Interrupcion
- //******************************************************//
- //
 
 #pragma code
-	
 #pragma interrupt YourHighPriorityISRCode
 void YourHighPriorityISRCode()	{
 	if(INTCONbits.TMR0IF==1){
@@ -59,8 +64,6 @@ void YourHighPriorityISRCode()	{
 			// 1.1.1. Scan all the positions of gBufferGreyscale
 				_asm 
 						
-						MOVFF	BSR, sBSR
-						NOP
 						MOVFF	FSR0, sFSR0
 						NOP		
 						MOVFF	FSR0H, sFSR0H
@@ -69,10 +72,7 @@ void YourHighPriorityISRCode()	{
 						NOP
 						MOVFF	FSR1H, sFSR1H
 						NOP
-						MOVFF	FSR2, sFSR2
-						NOP
-						MOVFF	FSR2H, sFSR2H
-						NOP
+
 						
 						CLRF	FSR0, ACCESS // FSR0 is used as an index to scan G_BUFFER_MATRIX
 						CLRF	FSR0H, ACCESS
@@ -85,7 +85,7 @@ void YourHighPriorityISRCode()	{
 						//ADDRESS_I_BUFFER_MATRIX represents directly the memory address for G_BUFFER_MATRIX
 						MOVFF	POSTINC0, WREG
 						NOP
-						SUBWF	ADDRESS_I_GREYSCALE, W, ACCESS
+						SUBWF	iGreyscale, W, ACCESS
 						BNZ		UPDATE_COLUMN_ROW
 
 						// 1.1.X. If equal turn off the pixel , everything is on until it detects samevalue
@@ -136,13 +136,13 @@ void YourHighPriorityISRCode()	{
 				// 1.3. Calcualting rowISR and columnISR 
 				UPDATE_COLUMN_ROW:		
 
-						INCF	ADDRESS_COLUMN_ISR, F, ACCESS
-						MOVF	ADDRESS_COLUMN_ISR, W, ACCESS
+						INCF	columnISR, F, ACCESS
+						MOVF	columnISR, W, ACCESS
 						SUBLW	MAX_NUM_COLUMNS
 						
 						BNZ		LOOP_SCAN_G_BUFFER_MATRIX
-						CLRF	ADDRESS_COLUMN_ISR, ACCESS
-						INCF	ADDRESS_ROW_ISR, F, ACCESS
+						CLRF	columnISR, ACCESS
+						INCF	rowISR, F, ACCESS
 				
 				LOOP_SCAN_G_BUFFER_MATRIX:
 				
@@ -235,11 +235,11 @@ void YourHighPriorityISRCode()	{
 					BCF		LATD, aRCK, ACCESS
 
 		// 1.2. Control, increment and reset of iGreyscale of mBufferMatrix
-					INCF	ADDRESS_I_GREYSCALE, F, ACCESS
+					INCF	iGreyscale, F, ACCESS
 					MOVLW	MAX_NUM_GREYSCALE
-					XORWF	ADDRESS_I_GREYSCALE, W, ACCESS
+					XORWF	iGreyscale, W, ACCESS
 					BNZ		END
-					CLRF	ADDRESS_I_GREYSCALE, ACCESS
+					CLRF	iGreyscale, ACCESS
 				//_endasm
 
 			//for( iBufferMatrix = 0; iBufferMatrix <=24 ; iBufferMatrix++ ){
@@ -277,8 +277,7 @@ void YourHighPriorityISRCode()	{
 	TMR0H = 0;
 
 	_asm
-						MOVFF	sBSR, BSR
-						NOP
+
 						MOVFF	sFSR0, FSR0
 						NOP	
 						MOVFF	sFSR0H, FSR0H
@@ -287,10 +286,7 @@ void YourHighPriorityISRCode()	{
 						NOP
 						MOVFF	sFSR1H, FSR1H
 						NOP
-						MOVFF	sFSR2, FSR2
-						NOP
-						MOVFF	sFSR2H, FSR2H
-						NOP
+
 	_endasm
 	}//if tmr0
 
@@ -301,7 +297,7 @@ void YourHighPriorityISRCode()	{
 				iTimer1++;
 				iMenu++;
 			}//if	
-			if (iMenu == MENU_MAX){
+			if (iMenu == MAX_MENU){
 				iMenu = 0;
 				FIRST = 0;
 				SECOND = 0;
