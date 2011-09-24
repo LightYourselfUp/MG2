@@ -97,7 +97,7 @@ void main(void){
 	OpenTimer1(TIMER_INT_ON & T1_SOURCE_INT &  T1_PS_1_8 & T1_OSC1EN_OFF & T1_SYNC_EXT_OFF); //
 	WriteTimer1(0x00 & 0x00);
 
-	//Enabling interrups
+	/* Enabling interrups */
 	INTCONbits.PEIE = 1;	// Peripherial interrupt enabled
 	INTCONbits.GIE = 1;	// Global interrupt enabled
 
