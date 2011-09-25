@@ -320,11 +320,9 @@ void YourHighPriorityISRCode()	{
 		// Reactivating TMR1 interrupt	
 		PIR1bits.TMR1IF=0;
 		WriteTimer1(0x00 & 0x00);		
-	}
-
+	} // End if TMR1
 }	//This return will be a "retfie fast", since this is in a #pragma interrupt section 
 
 #pragma interruptlow YourLowPriorityISRCode
 void YourLowPriorityISRCode()	{
-
 }	//This return will be a "retfie", since this is in a #pragma interruptlow section 
