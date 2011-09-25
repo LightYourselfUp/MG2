@@ -56,14 +56,14 @@ void Low_ISR (void){
 
 #pragma code
 #pragma interrupt YourHighPriorityISRCode
+/* High priority interrupt routines */
 void YourHighPriorityISRCode()	{
+// Each time the TMR0 flag is "1", gBufferGreyscale is compared with one level of brightness (from 0 to 256). Translated to serial value on
+// mBufferMatrix and send through SIx. Every 256 TMR0 routines execution one whole pwm image is showed in the matrix display
 	if(INTCONbits.TMR0IF==1){
-
-	// 1r part. gBufferGreyscale to mBufferMatrix
-		// 1.1. Compare gBufferGreyscale with iGreyscale
-			// 1.1.1. Scan all the positions of gBufferGreyscale
+				//This routine has been recode in assembly in order to speed up its executation
 				_asm 
-						
+						// Saving previous routin value of FSR0 and FSR1 to recover them at the end of the routine						
 						MOVFF	FSR0, sFSR0
 						NOP		
 						MOVFF	FSR0H, sFSR0H
@@ -73,7 +73,7 @@ void YourHighPriorityISRCode()	{
 						MOVFF	FSR1H, sFSR1H
 						NOP
 
-						
+						// Initializing serveral registers						
 						CLRF	FSR0, ACCESS // FSR0 is used as an index to scan G_BUFFER_MATRIX
 						CLRF	FSR0H, ACCESS
 						CLRF	FSR1, ACCESS
@@ -81,24 +81,26 @@ void YourHighPriorityISRCode()	{
 						CLRF	columnISR, ACCESS
 						CLRF	rowISR, ACCESS
 
+				// This loop scans all gBufferGreyscale value (one per pixel) compare them to the actual value of iGreyscale and if it matchs, 
+				// turn off the pixel in the mBufferMatrix (which is the serial output file) 		
 				SCAN_G_BUFFER_MATRIX:
-						//ADDRESS_I_BUFFER_MATRIX represents directly the memory address for G_BUFFER_MATRIX
+						//FSR0 iterates over gBufferGreyscale
 						MOVFF	POSTINC0, WREG
 						NOP
 						SUBWF	iGreyscale, W, ACCESS
 						BNZ		UPDATE_COLUMN_ROW
 
-						// 1.1.X. If equal turn off the pixel , everything is on until it detects samevalue
-						// ----_---__--___-____
-						// Reset the corresponding value
-						
+						/* If iGreyscale = gBufferGreyscale[FSR0], the corresponding pixel is reset in mBufferMatrix */
+						// Adding the actual rowISR value to the address of mBufferMatrix[0] selects the proper mBufferMatrix byte that
+						// represents the row where the pixel to reset is saved
 						MOVLW	ADDRESS_M_BUFFER_MATRIX_0
 						ADDWF	rowISR, W, ACCESS
-						//now we have the deserid mBufferMatrix vector on WREG			
+						//now we have the desired mBufferMatrix vector on WREG			
 						MOVFF	WREG, FSR1
 						NOP
-						//MOVF	columnISR, W, ACCESS
-						//SUBLW	
+						
+						// The next instructions check out the different possible position of the pixel inside of the row,
+						// whenever it matchs is reset
 						MOVLW	0
 						XORWF	columnISR, W, ACCESS
 						BNZ		COLUMN_ISR_1		
@@ -133,7 +135,7 @@ void YourHighPriorityISRCode()	{
 
 						BCF		INDF1, 4, ACCESS
 				
-				// 1.3. Calcualting rowISR and columnISR 
+				// The rowISR and columnISR values are updated
 				UPDATE_COLUMN_ROW:		
 
 						INCF	columnISR, F, ACCESS
@@ -144,6 +146,7 @@ void YourHighPriorityISRCode()	{
 						CLRF	columnISR, ACCESS
 						INCF	rowISR, F, ACCESS
 				
+				// Checking if the all the values of gBufferGreyscale have been iterated
 				LOOP_SCAN_G_BUFFER_MATRIX:
 				
 						MOVLW	MAX_NUM_PIXELS
@@ -151,7 +154,7 @@ void YourHighPriorityISRCode()	{
 						BC		PWM_GENERATOR
 						BRA		SCAN_G_BUFFER_MATRIX
 
-				// 2n part. Firmware PWM through SI1..5; mBufferMatrix 2 PORTB 
+				/* The second part of the TMR0 routine generates the PWM values through SIx, and regist them in the shift registers */
 				PWM_GENERATOR:
 
 					CLRF	LATB, ACCESS
@@ -229,28 +232,25 @@ void YourHighPriorityISRCode()	{
 					BSF		LATD, aSCK, ACCESS
 					BCF		LATD, aSCK, ACCESS
 
-
 					//RCK clock 4SRs				
 					BSF		LATD, aRCK, ACCESS
 					BCF		LATD, aRCK, ACCESS
 
-		// 1.2. Control, increment and reset of iGreyscale of mBufferMatrix
+
+					/* Resetting iGreyscale after iterating all the steps of the PWM */
 					INCF	iGreyscale, F, ACCESS
 					MOVLW	MAX_NUM_GREYSCALE
 					XORWF	iGreyscale, W, ACCESS
 					BNZ		END
 					CLRF	iGreyscale, ACCESS
-				//_endasm
-
-			//for( iBufferMatrix = 0; iBufferMatrix <=24 ; iBufferMatrix++ ){
-			//	gBufferGreyscale[iBufferMatrix] = gPreBufferGreyscale[iBufferMatrix];
-			//	}
 					
 					CLRF	FSR0, ACCESS	//Address for gBufferGreyscale is 0x00
 					MOVLW	ADDRESS_G_PRE_BUFFER_GREYSCALE_0
 					MOVWF	FSR1, ACCESS
 					NOP
-
+					
+					/*	After each whole PWM image is displayed, the gBufferGreyscale is updated with the gPreBufferGreyscale value 
+						this isolates possible problems of overlaping values */
 			LOOP_COPYING_BUFFERS:
 		
 					MOVLW	MAX_NUM_PIXELS
@@ -259,7 +259,9 @@ void YourHighPriorityISRCode()	{
 					NOP
 					BC		RESET_ALL_M_BUFFER_MATRIX
 					BRA		LOOP_COPYING_BUFFERS
-
+					
+					/*	Resetting mBufferMatrix to start the next PWM iteration. The reset value is 0xFF. Because all bits start on and
+						later are turn of depending on the gBufferGreyscale value */
 			RESET_ALL_M_BUFFER_MATRIX:
 		
 				//_asm
@@ -271,32 +273,36 @@ void YourHighPriorityISRCode()	{
 					MOVWF	ADDRESS_M_BUFFER_MATRIX_4, ACCESS
 			END:
 				_endasm
-			
+	
+	// Reactivating TMR0 interrupt		
 	INTCONbits.TMR0IF = 0;
 	TMR0L = 0x2F;
 	TMR0H = 0;
 
-	_asm
+				_asm
+					// Recovering FSR0 and FSR1 saved values		
+					MOVFF	sFSR0, FSR0
+					NOP	
+					MOVFF	sFSR0H, FSR0H
+					NOP
+					MOVFF	sFSR1, FSR1
+					NOP
+					MOVFF	sFSR1H, FSR1H
+					NOP
+				_endasm
 
-						MOVFF	sFSR0, FSR0
-						NOP	
-						MOVFF	sFSR0H, FSR0H
-						NOP
-						MOVFF	sFSR1, FSR1
-						NOP
-						MOVFF	sFSR1H, FSR1H
-						NOP
+	}// End if tmr0
 
-	_endasm
-	}//if tmr0
-
+// Each time the TMR1 flag is "1". The value of the Bootloader button is checked in order to know if it is requested to switch the MENU mode
+// at the same time iTimer1 is used as a delay between each time iMenu can be increment, in this way we avoid having unwanted bounce detections
 	if(PIR1bits.TMR1IF==1){
 				
 		if (iTimer1 == 0){
 			if(BOOTLOADER_BUTTON == ON_BOOT_BUTTON){
 				iTimer1++;
 				iMenu++;
-			}//if	
+			}//if
+			// Resetting variables is used, to just execute once the code inside the MENU (this is just for static frames)
 			if (iMenu == MAX_MENU){
 				iMenu = 0;
 				FIRST = 0;
@@ -311,6 +317,7 @@ void YourHighPriorityISRCode()	{
 			else iTimer1 = 0;
 		}	
 
+		// Reactivating TMR1 interrupt	
 		PIR1bits.TMR1IF=0;
 		WriteTimer1(0x00 & 0x00);		
 	}
