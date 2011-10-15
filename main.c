@@ -73,7 +73,7 @@ void main(void){
 	ADCON1 |= 0x0F;	// All possible analog input pins config as digital I/O
 	CMCON = 0x07;	// Comparators disabled 
 	
-	// Natural interaction expansion port configuration	
+	/* Natural interaction expansion port configuration	*/
 	TRISAbits.TRISA4 = 1;	// A4 Botton 3
 	TRISAbits.TRISA3 = 1;	// A3 Botton 2
 	TRISAbits.TRISA2 = 1;	// A2 Botton 1
@@ -98,10 +98,38 @@ void main(void){
 	OpenTimer0(TIMER_INT_ON & T0_8BIT & T0_SOURCE_INT & T0_PS_1_1);
 	WriteTimer0(0);
 
-	/* Configurar Timer 1 */
+	/* Timer 1 Configuration */
 	// Used to periodically check the input data (external buttons)
 	OpenTimer1(TIMER_INT_ON & T1_SOURCE_INT &  T1_PS_1_8 & T1_OSC1EN_OFF & T1_SYNC_EXT_OFF); //
 	WriteTimer1(0x00 & 0x00);
+	
+	/* A/D configuration */
+	//ADCON1
+	ADCON1bits.VCFG1 = 0;	// Voltage Reference Configuration bit (Vref-) = Vss 
+	ADCON1bits.VCFG0 = 0;	// Voltage Reference Configuration bit (Vref+) = Vdd
+	ADCON1bits.PCFG3 = 1;	// PCFG = "1110" enables AN0 and AN1
+	ADCON1bits.PCFG2 = 1;
+	ADCON1bits.PCFG1 = 1;
+	ADCON1bits.PCFG0 = 0;
+
+	//ADCON0
+	ADCON0bits.ADON = 1;	// A/D converter module is enabled 
+	ADCON0bits.CHS0 = 0;	// CHS = "0000" AN0 selected
+    ADCON0bits.CHS1 = 0;
+    ADCON0bits.CHS2 = 0;
+    ADCON0bits.CHS3 = 0;
+
+	//ADCON2
+	ADCON2bits.ADCS0 = ;	// A/D Adquisition Clock Select bits
+	ADCON2bits.ADCS1 = ;
+	ADCON2bits.ADCS2 = ;
+	ADCON2bits.ACQT0 = ;	// A/D Adquisition time bits
+	ADCON2bits.ACQT1 = ;
+	ADCON2bits.ACQT2 = ;
+	ADCON2bits.ADFM = 0;	// Left justified 	. . .ADRESH . . : . . ADRESL. . .
+							//					7 6 5 4 3 2 1 0 : 7 6 5 4 3 2 1 0
+							//					X X X X X X X X . X X . . . . . . <-Left Justified
+
 
 	/* Enabling interrups */
 	INTCONbits.PEIE = 1;	// Peripherial interrupt enabled
