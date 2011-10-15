@@ -42,7 +42,7 @@ Comments:
 #define aSI5 4
 
 // Bootloader button definitoins
-#define BOOTLOADER_BUTTON	PORTEbits.RE0
+#define BOOTLOADER_BUTTON	PORTAbits.RA2//PORTEbits.RE0
 #define ON_BOOT_BUTTON	0
 
 // Maximum values and reset definitions

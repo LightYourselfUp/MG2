@@ -73,7 +73,13 @@ void main(void){
 	ADCON1 |= 0x0F;	// All possible analog input pins config as digital I/O
 	CMCON = 0x07;	// Comparators disabled 
 	
-	TRISA = 0;	// A0..A5	Expansion port
+	// Natural interaction expansion port configuration	
+	TRISAbits.TRISA4 = 1;	// A4 Botton 3
+	TRISAbits.TRISA3 = 1;	// A3 Botton 2
+	TRISAbits.TRISA2 = 1;	// A2 Botton 1
+	TRISAbits.TRISA1 = 1;	// A1 Potentiometer 2
+	TRISAbits.TRISA0 = 1;	// A0 Potentiometer 1
+
 	TRISB = 0;	// B0..B6	Serial input for the Shift Registers
 	TRISD = 0;	// D0..D3	Shift Registers control inputs: SCK, RCK, _SCL, _G
 	TRISEbits.TRISE0 = 1; //Input button PORTEbits.RE0
