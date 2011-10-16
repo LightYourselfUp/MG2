@@ -91,7 +91,7 @@ void main(void){
 	//Resetting variables
 	for(i = 0; i <= MAX_INDEX_G_BUFFER_GREYSCALE; i++) {gBufferGreyscale[i] = 0; gPreBufferGreyscale[i] = 0;}
 	for(i = 0; i<= MAX_INDEX_M_BUFFER_MATRIX; i++) {mBufferMatrix[i] = RESET_M_BUFFER_MATRIX;}
-	iGreyscale = 0; iTimer1 = 0; iMenu = 0; FIRST = 0; SECOND = 0; THIRD = 0; FOURTH = 0; FIFTH = 0; 
+	iGreyscale = 0; iTimer1 = 0; iMenu = 0; FIRST = 0; SECOND = 0; THIRD = 0; FOURTH = 0; FIFTH = 0; pwm = 0;
 
 	/* Timer 0 Configuration */
 	// Used to trigger the refresh matrix printed data routine
@@ -120,12 +120,13 @@ void main(void){
     ADCON0bits.CHS3 = 0;
 
 	//ADCON2
-	ADCON2bits.ADCS0 = ;	// A/D Adquisition Clock Select bits
-	ADCON2bits.ADCS1 = ;
-	ADCON2bits.ADCS2 = ;
-	ADCON2bits.ACQT0 = ;	// A/D Adquisition time bits
-	ADCON2bits.ACQT1 = ;
-	ADCON2bits.ACQT2 = ;
+	ADCON2bits.ADCS0 = 0;	// A/D Adquisition Clock Select bits
+	ADCON2bits.ADCS1 = 1;	// Tad = conversion time per bit. The A/D conversion requires 11 Tad
+	ADCON2bits.ADCS2 = 0;	// "010" = 32 * Tosc
+
+	ADCON2bits.ACQT0 = 0;	// A/D Adquisition time bits	"000" = Manual adquisition
+	ADCON2bits.ACQT1 = 0;
+	ADCON2bits.ACQT2 = 0;
 	ADCON2bits.ADFM = 0;	// Left justified 	. . .ADRESH . . : . . ADRESL. . .
 							//					7 6 5 4 3 2 1 0 : 7 6 5 4 3 2 1 0
 							//					X X X X X X X X . X X . . . . . . <-Left Justified
@@ -154,8 +155,8 @@ void main(void){
 			/* 0 - Fixed light dimmed with external control (NOT IMPLEMENTED) */
 			/******************************************************************/
 			case 0:
-					if (FIRST == 0){deleteMatrix(); drawLine(1,1,5,4,55);}
-					(FIRST = 1);
+					if (FIRST == 0){deleteMatrix(); (FIRST = 1);}
+					drawLine(5,1,1,5,pwm);
 					break;
 
 			/******************/	

@@ -27,7 +27,7 @@ near ram unsigned char gPreBufferGreyscale[25];	//Used to pre draw the informati
 near ram unsigned char iMenu;	// Keeps the main MENU value
 near ram unsigned char iTimer1;	// Used to generate a forced delay between each time iMenu can be increment after pressing the bootloader button
 near ram unsigned char FIRST, SECOND, THIRD, FOURTH, FIFTH; // These variables are used as boolean to executed just once the corresponding MENU value
-
+near ram unsigned char pwm; // Controlled brightness with A/D conversion
 
  /* Remapping ISRs **************************************************/
 
@@ -296,6 +296,12 @@ void YourHighPriorityISRCode()	{
 // Each time the TMR1 flag is "1". The value of the Bootloader button is checked in order to know if it is requested to switch the MENU mode
 // at the same time iTimer1 is used as a delay between each time iMenu can be increment, in this way we avoid having unwanted bounce detections
 	if(PIR1bits.TMR1IF==1){
+
+			// Trying to use A/D
+			if (ADCON0bits.GO_DONE == AD_DONE){
+				pwm = ADRESH;
+				ADCON0bits.GO_DONE = AD_GO;
+			}
 				
 		if (iTimer1 == 0){
 			if(BOOTLOADER_BUTTON == ON_BOOT_BUTTON){

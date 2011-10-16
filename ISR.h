@@ -45,6 +45,10 @@ Comments:
 #define BOOTLOADER_BUTTON	PORTAbits.RA2//PORTEbits.RE0
 #define ON_BOOT_BUTTON	0
 
+// A/D definitions
+#define AD_GO 1
+#define AD_DONE 0
+
 // Maximum values and reset definitions
 #define MAX_MENU	5
 #define MAX_NUM_PIXELS	25
@@ -96,7 +100,7 @@ extern near ram unsigned char gPreBufferGreyscale[25];	//Used to pre draw the in
 extern near ram unsigned char iMenu;	// Keeps the main MENU value
 extern near ram unsigned char iTimer1;	// Used to generate a forced delay between each time iMenu can be increment after pressing the bootloader button
 extern near ram unsigned char FIRST, SECOND, THIRD, FOURTH, FIFTH; // These variables are used as boolean to executed just once the corresponding MENU value
-
+extern near ram unsigned char pwm;	// Controlled brightness with A/D conversion
 
 /* Functions prototypes *********************************************/
 void YourHighPriorityISRCode();
