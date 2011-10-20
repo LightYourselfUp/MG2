@@ -14,9 +14,15 @@ Comments:
 /* Files included ***************************************************/
 #include "draw.h"
 
+/* Variables ********************************************************/
+volatile unsigned char gBuffer5x5[5] = {0x00,0x00,0x00,0x00,0x00};
+
+
 /* Functions prototypes *********************************************/
 // Converts a lineal brightness value to a gamma corrected value for the LEDs in the matrix
 unsigned char gammaCorrection(unsigned char brightness);
+// Converts frames[5] to gBufferGreyscale[25]
+void draw5x5to25(void);
 
 // Returns the absolute value of a number
 signed char abs(signed char number);
@@ -124,3 +130,26 @@ else
  	return 0-number;
 }
 
+/* This functions allow to convert 5x5 frames[5] to gBufferGreyscale[25]; if a pixel is '1' his greyscale value is PWM (AN0) */
+void draw5x5to25(){
+	unsigned char i, j, k = 0;
+	for(i = INITIAL_ROW; i <= FINAL_ROW; i++){
+		for(j = INITIAL_COLUMN; j <= FINAL_COLUMN; j++){
+			if( ( ( gBuffer5x5[i] >> j ) & 1 ) == 1 ){
+				gBufferGreyscale[k++] = pwm;
+				}
+			else{
+				gBufferGreyscale[k++] = 0;
+				}
+		}//for j
+	}//for i
+}
+
+/* Draw a frame from content */
+void drawFrame(){
+	unsigned char i;
+	for ( i = INITIAL_ROW; i <= FINAL_ROW; i++ ){
+		gBuffer5x5[i] = invaders[3][i];
+		}
+	draw5x5to25();
+}

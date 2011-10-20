@@ -19,6 +19,7 @@ Comments:
 #include "timers.h"
 #include "delays.h"
 #include "ISR.h"
+#include "content.h"
 #include "draw.h"
 
 /* Device setup ******************************************************/
@@ -152,11 +153,15 @@ void main(void){
 		switch(iMenu){
 
 			/******************************************************************/
-			/* 0 - Fixed light dimmed with external control (NOT IMPLEMENTED) */
+			/* 0 - Fixed light dimmed with external control                   */
 			/******************************************************************/
 			case 0:
 					if (FIRST == 0){deleteMatrix(); (FIRST = 1);}
-					drawLine(5,1,1,5,pwm);
+					drawLine(1,1,1,5,pwm);	//dirty way to draw the all pixels at the same time
+					drawLine(2,1,2,5,pwm);
+					drawLine(3,1,3,5,pwm);
+					drawLine(4,1,4,5,pwm);
+					drawLine(5,1,5,5,pwm);
 					break;
 
 			/******************/	
@@ -185,16 +190,18 @@ void main(void){
 			/* 2- Slow wave (NOT IMPLMENTED) */
 			/*********************************/
 			case 2:
-					if (THIRD == 0){deleteMatrix(); drawLine(1,3,5,3,150);}
-					(THIRD = 1);
+					if (THIRD == 0){deleteMatrix(); (THIRD = 1); }
+					drawFrame();
 					break;
 
 			/************************************/
 			/* 3- Message mode (NOT IMPLMENTED) */
 			/************************************/
 			case 3:
-					if (FOURTH == 0){deleteMatrix(); drawLine(1,4,5,4,200);}
-					(FOURTH = 1);
+					if (FOURTH == 0){deleteMatrix(); (FOURTH = 1);}
+					drawLine(1,1,1,5,pwm);
+					drawLine(3,1,3,5,pwm);
+					drawLine(5,1,5,5,pwm);					
 					break;
 
 			/**********************************/

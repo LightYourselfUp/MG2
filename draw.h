@@ -1,5 +1,5 @@
 /*********************************************************************
-Date: 24-9-2011 
+Date: 20-10-2011 
 Project: #MG
 Version: 0.5 DanUp
 File: draw.h
@@ -16,6 +16,13 @@ Comments:
 /* Files included ***************************************************/
 #include <p18f4550.h>
 #include "ISR.h"
+#include "content.h"
+
+/* Definitions ******************************************************/
+#define INITIAL_COLUMN 0
+#define FINAL_COLUMN 4
+#define INITIAL_ROW 0
+#define FINAL_ROW 4
 
 /* Functions prototypes *********************************************/
 
@@ -30,5 +37,8 @@ void drawLine(unsigned char x1, unsigned char y1, unsigned char x2, unsigned cha
 
 //Draw a square with coordinates (xBottom, yBottom & xTop, yTop), also the brigtness is controllable
 void drawSquare(unsigned char xBottom, unsigned char yBotton, unsigned char xTop, unsigned char yTop, unsigned char brightness);
+
+//Draw a frame from content
+void drawFrame(void);
 
 #endif //DRAW_H
