@@ -91,8 +91,6 @@ Comments:
 
 
 /* Extern variables *************************************************/
-
-
 extern near ram unsigned char gBufferGreyscale[25];	// Used to draw the information that we want to display in the matrix.
 extern near ram unsigned char mBufferMatrix[5];	// Buffered used to decode gBufferGreyscale brightness and send "firmware" PWM through SIx
 extern near ram unsigned char iGreyscale;	// Index used to control the brightness step for the "firmware" pwm

@@ -13,6 +13,7 @@ Comments:
 #ifndef CONTENT_H
 #define CONTENT_H
 
+/* Definitions ******************************************************/
 #define	KNIGHT_RIDER_MAX 1
 #define	KNIGHT_RIDER_4 15
 #define	KNIGHT_RIDER_3 25
@@ -23,6 +24,7 @@ Comments:
 #define KNIGHT_RIDER_LOOP_START 6
 #define KNIGHT_RIDER_LOOP_END 15
 
+/* Extern variables *************************************************/
 extern rom const unsigned char letters[][5];
 extern rom const unsigned char numbers[][5];
 extern rom const unsigned char invaders[][5];

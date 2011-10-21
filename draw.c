@@ -146,10 +146,10 @@ void draw5x5to25(){
 }
 
 /* Draw a frame from content */
-void drawFrame(){
+void drawFrame(rom unsigned char *frame){
 	unsigned char i;
 	for ( i = INITIAL_ROW; i <= FINAL_ROW; i++ ){
-		gBuffer5x5[i] = invaders[3][i];
+		gBuffer5x5[i] = *frame++;
 		}
 	draw5x5to25();
 }

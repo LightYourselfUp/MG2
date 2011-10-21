@@ -21,6 +21,7 @@ Comments:
 #include "ISR.h"
 #include "content.h"
 #include "draw.h"
+#include "transitions.h"
 
 /* Device setup ******************************************************/
 
@@ -101,9 +102,14 @@ void main(void){
 
 	/* Timer 1 Configuration */
 	// Used to periodically check the input data (external buttons)
-	OpenTimer1(TIMER_INT_ON & T1_SOURCE_INT &  T1_PS_1_8 & T1_OSC1EN_OFF & T1_SYNC_EXT_OFF); //
-	WriteTimer1(0x00 & 0x00);
+	OpenTimer1(TIMER_INT_ON & T1_SOURCE_INT &  T1_PS_1_8 & T1_OSC1EN_OFF & T1_SYNC_EXT_OFF);
+	WriteTimer1( 0x00 & 0x00 );
 	
+	/* Timer 3 Configuration */
+	// Used to create delays within the different menus without blocking with delays
+	OpenTimer3( TIMER_INT_ON & T3_16BIT_RW & T3_SOURCE_INT & T3_PS_1_8 & T3_SYNC_EXT_OFF);
+	WriteTimer3( 0x00 & 0x00 );	
+
 	/* A/D configuration */
 	//ADCON1
 	ADCON1bits.VCFG1 = 0;	// Voltage Reference Configuration bit (Vref-) = Vss 
@@ -134,8 +140,12 @@ void main(void){
 
 
 	/* Enabling interrups */
+	INTCONbits.TMR0IE = 1;	// Enables interrupts for TIMER0
+	PIE1bits.TMR1IE = 1;	// Enables interrupts for TIMER1
+	PIE2bits.TMR3IE = 1;	// Enables interrupts for TIMER3
 	INTCONbits.PEIE = 1;	// Peripherial interrupt enabled
 	INTCONbits.GIE = 1;	// Global interrupt enabled
+
 
 	/* Main Loop */			
    while(1) 
@@ -168,7 +178,7 @@ void main(void){
 			/* 1- Slow square */
 			/******************/
 			case 1:
-
+					if (SECOND == 0){deleteMatrix(); (SECOND = 1);}
 					for(j = 130, i = 254; j<=254; j++, i--){	
 						drawSquare(1,1,5,5,j);
 						drawSquare(2,2,4,4,i);
@@ -191,7 +201,7 @@ void main(void){
 			/*********************************/
 			case 2:
 					if (THIRD == 0){deleteMatrix(); (THIRD = 1); }
-					drawFrame();
+					drawFrame((rom unsigned char *)&numbers[2][0]);
 					break;
 
 			/************************************/
@@ -199,9 +209,10 @@ void main(void){
 			/************************************/
 			case 3:
 					if (FOURTH == 0){deleteMatrix(); (FOURTH = 1);}
-					drawLine(1,1,1,5,pwm);
-					drawLine(3,1,3,5,pwm);
-					drawLine(5,1,5,5,pwm);					
+					transRight2Left((rom unsigned char *)&numbers[2][0], (rom unsigned char *)&numbers[3][0]);
+					//drawLine(1,1,1,5,pwm);
+					//drawLine(3,1,3,5,pwm);
+					//drawLine(5,1,5,5,pwm);					
 					break;
 
 			/**********************************/

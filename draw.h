@@ -24,6 +24,9 @@ Comments:
 #define INITIAL_ROW 0
 #define FINAL_ROW 4
 
+
+extern volatile unsigned char gBuffer5x5[5];
+
 /* Functions prototypes *********************************************/
 
 // Delete all the data content in the actual image displayed
@@ -39,6 +42,6 @@ void drawLine(unsigned char x1, unsigned char y1, unsigned char x2, unsigned cha
 void drawSquare(unsigned char xBottom, unsigned char yBotton, unsigned char xTop, unsigned char yTop, unsigned char brightness);
 
 //Draw a frame from content
-void drawFrame(void);
+void drawFrame(rom unsigned char *frame);
 
 #endif //DRAW_H
