@@ -130,16 +130,16 @@ else
  	return 0-number;
 }
 
-/* This functions allow to convert 5x5 frames[5] to gBufferGreyscale[25]; if a pixel is '1' his greyscale value is PWM (AN0) */
+/* This function allows to convert 5x5 frames[5] to gBufferGreyscale[25]; if a pixel is '1' his greyscale value is PWM (AN0) */
 void draw5x5to25(){
 	unsigned char i, j, k = 0;
 	for(i = INITIAL_ROW; i <= FINAL_ROW; i++){
 		for(j = INITIAL_COLUMN; j <= FINAL_COLUMN; j++){
 			if( ( ( gBuffer5x5[i] >> j ) & 1 ) == 1 ){
-				gBufferGreyscale[k++] = pwm;
+				gPreBufferGreyscale[k++] = pwm;
 				}
 			else{
-				gBufferGreyscale[k++] = 0;
+				gPreBufferGreyscale[k++] = 0;
 				}
 		}//for j
 	}//for i
