@@ -15,7 +15,7 @@ Comments:
 rom const unsigned char letters[][5] ={ 
 {0x0, 0x0, 0x0, 0x0, 0x0}, //SPACE BAR
 {0x1F, 0x11, 0x1F, 0x11, 0x11}, //A
-{0x1E, 0x11, 0x1F, 0x11, 0x1E}, //B
+{0x1E, 0x11, 0x1E, 0x11, 0x1E}, //B
 {0x1F, 0x10, 0x10, 0x10, 0x1F}, //C
 {0x1E, 0x11, 0x11, 0x11, 0x1E}, //D
 {0x1F, 0x10, 0x1E, 0x10, 0x1F}, //E
@@ -103,12 +103,9 @@ rom const unsigned char MarcManel[] = " NATA I ALBERT VOUS ME MANQUEZ /";
 rom const unsigned char Llevadme[] = " LLEVADME A CASA /";
 rom const unsigned char Laborda[] = " LABORDA TIO BUENO HAZME TUYA /";
 rom const unsigned char Hazlo[] = " HAZLO O NO LO HAGAS PERO NO LO INTENTES /";
-rom const unsigned char Force[] = " MAY THE FORCE BE WITH YOU /";
+rom const unsigned char Force[] = " MAY THE FORCE BE WITH YOU SON /";
 
-/*
-Luispis, ¿me haces un "Laborda tío bueno hazme tuya"? Si te inspiras haz 
-también un "hazlo o no lo hagas, pero no lo intentes" y/o "que la fuerza te acompañe".
-*/
+/* KNIGHT RIDER KITT */
 
 rom const unsigned char knightRiderKITT[][5] = {
 {KNIGHT_RIDER_OFF, KNIGHT_RIDER_OFF, KNIGHT_RIDER_OFF, KNIGHT_RIDER_OFF, KNIGHT_RIDER_OFF},//0

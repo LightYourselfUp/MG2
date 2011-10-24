@@ -17,11 +17,11 @@ Comments:
 
 #include <p18F4550.h>
 #include "timers.h"
-#include "delays.h"
 #include "ISR.h"
 #include "content.h"
 #include "draw.h"
 #include "transitions.h"
+#include "animations.h"
 
 /* Device setup ******************************************************/
 
@@ -209,7 +209,9 @@ void main(void){
 			/************************************/
 			case 3:
 					if (FOURTH == 0){deleteMatrix(); (FOURTH = 1);}
-					transRight2Left((rom unsigned char *)&numbers[2][0], (rom unsigned char *)&numbers[3][0]);
+					scrollText((rom unsigned char *)&Force[0], TRANS_RIGHT_2_LEFT);
+					if(iMenu != 2){break;}	
+					//transRight2Left((rom unsigned char *)&numbers[2][0], (rom unsigned char *)&numbers[3][0]);
 					//drawLine(1,1,1,5,pwm);
 					//drawLine(3,1,3,5,pwm);
 					//drawLine(5,1,5,5,pwm);					

@@ -37,25 +37,25 @@ void transRight2Left(rom unsigned char *frame1, rom unsigned char *frame2){
 	Delay10KTCYx(30);
 	//3. Desplazamos gBuffer i sumamos la primera del siguente carácter
 	for ( i = 0; i <= 4; i++ ){
-		gBuffer5x5[i] = ( gBuffer5x5[i] << 1 )| ( gBufferTransition[i]>>4 );
+		gBuffer5x5[i] = ( gBuffer5x5[i] << 1 ) | ( gBufferTransition[i] >> 4 );
 		}
 	draw5x5to25();
 	Delay10KTCYx(30);
 	//4. Desplazamos gBuffer i sumamos la primera del siguente carácter
 	for ( i = 0; i <= 4; i++ ){
-		gBuffer5x5[i] = ( gBuffer5x5[i] << 1 )| ( gBufferTransition[i]>>3 );
+		gBuffer5x5[i] = ( gBuffer5x5[i] << 1 ) | ( gBufferTransition[i] >> 3 );
 		}
 	draw5x5to25();
 	Delay10KTCYx(30);
 	//5. Desplazamos gBuffer i sumamos la primera del siguente carácter
 	for ( i = 0; i <= 4; i++ ){
-		gBuffer5x5[i] = ( gBuffer5x5[i] << 1 )| ( gBufferTransition[i]>>2 );
+		gBuffer5x5[i] = ( gBuffer5x5[i] << 1 ) | ( gBufferTransition[i] >> 2 );
 		}
 	draw5x5to25();
 	Delay10KTCYx(30);
 	//6. Desplazamos gBuffer i sumamos la primera del siguente carácter
 	for ( i = 0; i <= 4; i++ ){
-		gBuffer5x5[i] = ( gBufferTransition[i]>>1 );
+		gBuffer5x5[i] = ( gBufferTransition[i] >> 1 );
 		}
 	draw5x5to25();
 	Delay10KTCYx(30);
@@ -69,7 +69,7 @@ void transRight2Left(rom unsigned char *frame1, rom unsigned char *frame2){
 	//	gBuffer5x5[i] = gBufferTransition[i];
 	//	}
 	//draw5x5to25();
-	//Delay10KTCYx(TIME_MID);
+	//Delay10KTCYx(TIME_MID); 
 }
 
 /* Transition Down to Top */
