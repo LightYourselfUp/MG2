@@ -14,6 +14,11 @@ Comments:
 #define CONTENT_H
 
 /* Definitions ******************************************************/
+/* Invaders */
+#define	DELAY_INVADERS	110
+#define INVADERS_PAIR_REPETITIONS 3
+
+/* Knight rider */
 #define	KNIGHT_RIDER_MAX 1
 #define	KNIGHT_RIDER_4 15
 #define	KNIGHT_RIDER_3 25

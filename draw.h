@@ -44,4 +44,7 @@ void drawSquare(unsigned char xBottom, unsigned char yBotton, unsigned char xTop
 //Draw a frame from content
 void drawFrame(rom unsigned char *frame);
 
+//Converts frames from 5bytes to 25 bytes
+void draw5x5to25(void);
+
 #endif //DRAW_H

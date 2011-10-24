@@ -50,13 +50,14 @@ Comments:
 #define AD_DONE 0
 
 // Maximum values and reset definitions
-#define MAX_MENU	5
+#define MAX_MENU	6
 #define MAX_NUM_PIXELS	25
 #define MAX_NUM_COLUMNS	5
 #define MAX_NUM_GREYSCALE	255
 #define MAX_INDEX_G_BUFFER_GREYSCALE	24
 #define MAX_INDEX_M_BUFFER_MATRIX	4
-#define RESET_M_BUFFER_MATRIX 0xFF
+#define RESET_M_BUFFER_MATRIX	0xFF
+#define CHANGE_MODE_DELAY_MULTIPLIER	6
 
 // Assembly definitions
 #define	W	0
@@ -97,7 +98,7 @@ extern near ram unsigned char iGreyscale;	// Index used to control the brightnes
 extern near ram unsigned char gPreBufferGreyscale[25];	//Used to pre draw the information that we want to display in the matrix. 
 extern near ram unsigned char iMenu;	// Keeps the main MENU value
 extern near ram unsigned char iTimer1;	// Used to generate a forced delay between each time iMenu can be increment after pressing the bootloader button
-extern near ram unsigned char FIRST, SECOND, THIRD, FOURTH, FIFTH; // These variables are used as boolean to executed just once the corresponding MENU value
+extern near ram unsigned char FIRST, SECOND, THIRD, FOURTH, FIFTH, SIXTH; // These variables are used as boolean to executed just once the corresponding MENU value
 extern near ram unsigned char pwm;	// Controlled brightness with A/D conversion
 
 /* Functions prototypes *********************************************/

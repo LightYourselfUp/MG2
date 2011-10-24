@@ -26,7 +26,7 @@ near ram unsigned char sFSR0, sFSR0H, sFSR1, sFSR1H;	// Used to save FSRs values
 near ram unsigned char gPreBufferGreyscale[25];	//Used to pre draw the information that we want to display in the matrix. 
 near ram unsigned char iMenu;	// Keeps the main MENU value
 near ram unsigned char iTimer1;	// Used to generate a forced delay between each time iMenu can be increment after pressing the bootloader button
-near ram unsigned char FIRST, SECOND, THIRD, FOURTH, FIFTH; // These variables are used as boolean to executed just once the corresponding MENU value
+near ram unsigned char FIRST, SECOND, THIRD, FOURTH, FIFTH, SIXTH; // These variables are used as boolean to executed just once the corresponding MENU value
 near ram unsigned char pwm; // Controlled brightness with A/D conversion
 
  /* Remapping ISRs **************************************************/
@@ -316,10 +316,11 @@ void YourHighPriorityISRCode()	{
 				THIRD = 0;
 				FOURTH = 0;
 				FIFTH = 0;
+				SIXTH = 0;
 			}		
 		}
 		else{
-			if (iTimer1 < 6)iTimer1++;
+			if (iTimer1 < CHANGE_MODE_DELAY_MULTIPLIER) iTimer1++;
 			else iTimer1 = 0;
 		}	
 

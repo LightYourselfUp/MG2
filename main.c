@@ -93,7 +93,7 @@ void main(void){
 	//Resetting variables
 	for(i = 0; i <= MAX_INDEX_G_BUFFER_GREYSCALE; i++) {gBufferGreyscale[i] = 0; gPreBufferGreyscale[i] = 0;}
 	for(i = 0; i<= MAX_INDEX_M_BUFFER_MATRIX; i++) {mBufferMatrix[i] = RESET_M_BUFFER_MATRIX;}
-	iGreyscale = 0; iTimer1 = 0; iMenu = 0; FIRST = 0; SECOND = 0; THIRD = 0; FOURTH = 0; FIFTH = 0; pwm = 0;
+	iGreyscale = 0; iTimer1 = 0; iMenu = 0; FIRST = 0; SECOND = 0; THIRD = 0; FOURTH = 0; FIFTH = 0; SIXTH = 0; pwm = 0;
 
 	/* Timer 0 Configuration */
 	// Used to trigger the refresh matrix printed data routine
@@ -155,9 +155,10 @@ void main(void){
 		
 				0 - Fixed light dimmed with external control (NOT IMPLEMENTED)
 				1 - Slow square
-				2 - Slow wave (NOT IMPLMENTED)
-				3 - Message mode (NOT IMPLMENTED)
-				4 - Party mode (NOT IMPLMENTED)
+				2 - Slow chess board
+				3 - Message
+				4 - Invaders
+				5 - Party (Dirty)
 		
 		*/	
 		switch(iMenu){
@@ -196,36 +197,108 @@ void main(void){
 					}
 						if(iMenu != 1){break;}	// It allows to break the case during the executation	
 			
-			/*********************************/
-			/* 2- Slow wave (NOT IMPLMENTED) */
-			/*********************************/
+			/***********************/
+			/* 2- Slow Chess board */
+			/***********************/
 			case 2:
 					if (THIRD == 0){deleteMatrix(); (THIRD = 1); }
-					drawFrame((rom unsigned char *)&numbers[2][0]);
-					break;
+					for(j = 130, i = 254; j<=254; j++, i--){	
+						drawPoint(1,5,j);
+						drawLine(1,3,3,5,j);
+						drawLine(1,1,5,5,j);
+						drawLine(3,1,5,3,j);
+						drawPoint(5,1,j);
+						
+						drawLine(1,4,2,5,i);
+						drawLine(1,2,4,5,i);
+						drawLine(2,1,5,4,i);
+						drawLine(4,1,5,2,i);
+						Delay10KTCYx(100);
+						if(iMenu != 2){break;}	
+					}
+						if(iMenu != 2){break;}	
+					for(j = 130, i = 254; j<=254; j++, i--){		
+						drawPoint(1,5,i);
+						drawLine(1,3,3,5,i);
+						drawLine(1,1,5,5,i);
+						drawLine(3,1,5,3,i);
+						drawPoint(5,1,i);
+						
+						drawLine(1,4,2,5,j);
+						drawLine(1,2,4,5,j);
+						drawLine(2,1,5,4,j);
+						drawLine(4,1,5,2,j);
+						Delay10KTCYx(100);
+						if(iMenu != 2){break;}
+					}
+						if(iMenu != 2){break;}	// It allows to break the case during the executation	
+			
 
-			/************************************/
-			/* 3- Message mode (NOT IMPLMENTED) */
-			/************************************/
+			/**************/
+			/* 3- Message */
+			/**************/
 			case 3:
 					if (FOURTH == 0){deleteMatrix(); (FOURTH = 1);}
-					scrollText((rom unsigned char *)&Force[0], TRANS_RIGHT_2_LEFT);
-					if(iMenu != 2){break;}	
-					//transRight2Left((rom unsigned char *)&numbers[2][0], (rom unsigned char *)&numbers[3][0]);
-					//drawLine(1,1,1,5,pwm);
-					//drawLine(3,1,3,5,pwm);
-					//drawLine(5,1,5,5,pwm);					
+					scrollText((rom unsigned char *)&Force[0], TRANS_RIGHT_2_LEFT);	
+					
 					break;
 
-			/**********************************/
-			/* 4- Party mode (NOT IMPLMENTED) */
-			/**********************************/
+			/***************/
+			/* 4- Invaders */
+			/***************/
 			case 4:
-					if (FIFTH == 0){deleteMatrix(); drawLine(1,5,5,5,254);}
+					if (FIFTH == 0){deleteMatrix(); (FIFTH = 1);}
+						for(i = 1; i <= INVADERS_PAIR_REPETITIONS; i++){
+							drawFrame((rom unsigned char *)&invaders[0]);
+							Delay10KTCYx(DELAY_INVADERS);
+							if(iMenu != 4){break;}
+							drawFrame((rom unsigned char *)&invaders[1]);
+							Delay10KTCYx(DELAY_INVADERS);
+							if(iMenu != 4){break;}
+						}// end for
+						for(i = 1; i <= INVADERS_PAIR_REPETITIONS; i++){
+							drawFrame((rom unsigned char *)&invaders[2]);
+							Delay10KTCYx(DELAY_INVADERS);
+							if(iMenu != 4){break;}
+							drawFrame((rom unsigned char *)&invaders[3]);
+							Delay10KTCYx(DELAY_INVADERS);
+							if(iMenu != 4){break;}
+						}// end for
+						for(i = 1; i <= INVADERS_PAIR_REPETITIONS; i++){
+							drawFrame((rom unsigned char *)&invaders[4]);
+							Delay10KTCYx(DELAY_INVADERS);
+							if(iMenu != 4){break;}
+							drawFrame((rom unsigned char *)&invaders[5]);
+							Delay10KTCYx(DELAY_INVADERS);
+							if(iMenu != 4){break;}
+						}// end for
 					
+					break;
+
+
+			/********************/
+			/* 5- Party (Dirty) */
+			/********************/
+			case 5:
+					if (SIXTH == 0){deleteMatrix(); drawLine(1,5,5,5,254);}
+					for(j = 100, i = 254; j<=254; j++, i--){	
+						drawSquare(1,1,5,5,j);
+						drawSquare(2,2,4,4,i);
+						drawPoint(3,3,j);
+						if(iMenu != 5){break;}	
+					}
+						if(iMenu != 5){break;}	
+					for(j = 100, i = 254; j<=254; j++, i--){		
+						drawSquare(1,1,5,5,i);
+						drawSquare(2,2,4,4,j);
+						drawPoint(3,3,i);
+						if(iMenu != 5){break;}
+					}
+						if(iMenu != 5){break;}	// It allows to break the case during the executation	
+			
 					//SOLVES A BUG: because when TMR1F is called from this case, FIFTH is 
 					//reset but when we come back is set one because we are in case 4 not 1, 
-					if (iMenu == 4)(FIFTH = 1);	
+					if (iMenu == 5)(SIXTH = 1);	
 					break;			
 			
 			default:
