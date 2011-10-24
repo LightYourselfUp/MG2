@@ -81,8 +81,6 @@ void scrollText(rom unsigned char *text, unsigned char trans){
 void knightRider(unsigned char loop){
 	unsigned char i, j;
 	rom unsigned char * michael;
-	//ram unsigned char * devon;
-	//devon = gBufferGreyscale[0];
 	michael = &knightRiderKITT[0][0];
 
 	for(i = 0 ; i <= KNIGHT_RIDER_FRAMES; i++){
@@ -91,9 +89,14 @@ void knightRider(unsigned char loop){
 			i = KNIGHT_RIDER_LOOP_START;
 		}
 		for(j = 0; j<=4 ; j++){
-			gBufferGreyscale[j] = knightRiderKITT[i][0+j];
+			gPreBufferGreyscale[j] = knightRiderKITT[i][j];
+			gPreBufferGreyscale[j+5] = knightRiderKITT[i][j];
+			gPreBufferGreyscale[j+10] = knightRiderKITT[i][j];
+			gPreBufferGreyscale[j+15] = knightRiderKITT[i][j];
+			gPreBufferGreyscale[j+20] = knightRiderKITT[i][j];
+			
 			//gBufferGreyscale[j] = *michael++;
 		}
-			Delay10KTCYx(20);
+			Delay10KTCYx(KNIGHT_RIDER_DELAY);
 	}
 }

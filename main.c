@@ -239,7 +239,8 @@ void main(void){
 			/**************/
 			case 3:
 					if (FOURTH == 0){deleteMatrix(); (FOURTH = 1);}
-					scrollText((rom unsigned char *)&Force[0], TRANS_RIGHT_2_LEFT);	
+					knightRider(4);
+					//scrollText((rom unsigned char *)&Force[0], TRANS_RIGHT_2_LEFT);	
 					
 					break;
 

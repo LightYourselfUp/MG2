@@ -19,15 +19,16 @@ Comments:
 #define INVADERS_PAIR_REPETITIONS 3
 
 /* Knight rider */
-#define	KNIGHT_RIDER_MAX 1
-#define	KNIGHT_RIDER_4 15
-#define	KNIGHT_RIDER_3 25
-#define	KNIGHT_RIDER_2 28
-#define	KNIGHT_RIDER_1 31
+#define	KNIGHT_RIDER_MAX 0xFF
+#define	KNIGHT_RIDER_4 164
+#define	KNIGHT_RIDER_3 108
+#define	KNIGHT_RIDER_2 56
+#define	KNIGHT_RIDER_1 24
 #define	KNIGHT_RIDER_OFF 0
 #define KNIGHT_RIDER_FRAMES	20 //21 sin contar el 0
-#define KNIGHT_RIDER_LOOP_START 6
+#define KNIGHT_RIDER_LOOP_START 5
 #define KNIGHT_RIDER_LOOP_END 15
+#define KNIGHT_RIDER_DELAY	30
 
 /* Extern variables *************************************************/
 extern rom const unsigned char letters[][5];
