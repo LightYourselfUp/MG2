@@ -18,16 +18,19 @@ Comments:
 /* Variables ********************************************************/
 //Defining variables in access ram section 0x00..0x5F
 #pragma udata access accessram
-near ram unsigned char gBufferGreyscale[25];	// Used to draw the information that we want to display in the matrix.
-near ram unsigned char mBufferMatrix[5];	// Buffered used to decode gBufferGreyscale brightness and send "firmware" PWM through SIx
+near ram unsigned char gBufferGreyscale[MAX_NUM_PIXELS];	// Used to draw the information that we want to display in the matrix.
+near ram unsigned char mBufferMatrix[MAX_NUM_ROWS];	// Buffered used to decode gBufferGreyscale brightness and send "firmware" PWM through SIx
 near ram unsigned char iGreyscale;	// Index used to control the brightness step for the "firmware" pwm
 near ram unsigned char columnISR, rowISR; // Used to decode the gGrescale vector position(0..24) into rows(1..5) and columns(1..5)
 near ram unsigned char sFSR0, sFSR0H, sFSR1, sFSR1H;	// Used to save FSRs values during TIMER0 interrupt execution
-near ram unsigned char gPreBufferGreyscale[25];	//Used to pre draw the information that we want to display in the matrix. 
 near ram unsigned char iMenu;	// Keeps the main MENU value
 near ram unsigned char iTimer1;	// Used to generate a forced delay between each time iMenu can be increment after pressing the bootloader button
-near ram unsigned char FIRST, SECOND, THIRD, FOURTH, FIFTH, SIXTH; // These variables are used as boolean to executed just once the corresponding MENU value
+near ram unsigned char booleanMenu; // These variables are used as boolean to executed just once the corresponding MENU value
 near ram unsigned char pwm; // Controlled brightness with A/D conversion
+
+//For 7x7 not all the data fits in access ram, so gpr0 is used aswell, for less
+#pragma udata gpr0
+ram unsigned char gPreBufferGreyscale[MAX_NUM_PIXELS];	//Used to pre draw the information that we want to display in the matrix. 
 
  /* Remapping ISRs **************************************************/
 
@@ -74,9 +77,9 @@ void YourHighPriorityISRCode()	{
 						NOP
 
 						// Initializing serveral registers						
-						CLRF	FSR0, ACCESS // FSR0 is used as an index to scan G_BUFFER_MATRIX
+						CLRF	FSR0, ACCESS	// FSR0 is used as an index to scan G_BUFFER_MATRIX
 						CLRF	FSR0H, ACCESS
-						CLRF	FSR1, ACCESS
+						CLRF	FSR1, ACCESS	// FSR1 is used as a pointer to write on mBufferMatrix 
 						CLRF	FSR1H, ACCESS
 						CLRF	columnISR, ACCESS
 						CLRF	rowISR, ACCESS
@@ -98,12 +101,12 @@ void YourHighPriorityISRCode()	{
 						//now we have the desired mBufferMatrix vector on WREG			
 						MOVFF	WREG, FSR1
 						NOP
-						
+						// FSR1 is used as a pointer to write on mBufferMatrix
 						// The next instructions check out the different possible position of the pixel inside of the row,
 						// whenever it matchs is reset
 						MOVLW	0
 						XORWF	columnISR, W, ACCESS
-						BNZ		COLUMN_ISR_1		
+						BNZ		COLUMN_ISR_1	//Branch if not zero
 						BCF		INDF1, 0, ACCESS
 						BRA		UPDATE_COLUMN_ROW
 
@@ -133,7 +136,23 @@ void YourHighPriorityISRCode()	{
 
 				COLUMN_ISR_4:
 
+						MOVLW	4
+						XORWF	columnISR, W, ACCESS
+						BNZ		COLUMN_ISR_5		
 						BCF		INDF1, 4, ACCESS
+						BRA		UPDATE_COLUMN_ROW
+
+				COLUMN_ISR_5:
+
+						MOVLW	5
+						XORWF	columnISR, W, ACCESS
+						BNZ		COLUMN_ISR_6		
+						BCF		INDF1, 5, ACCESS
+						BRA		UPDATE_COLUMN_ROW
+
+				COLUMN_ISR_6:
+
+						BCF		INDF1, 6, ACCESS
 				
 				// The rowISR and columnISR values are updated
 				UPDATE_COLUMN_ROW:		
@@ -158,6 +177,44 @@ void YourHighPriorityISRCode()	{
 				PWM_GENERATOR:
 
 					CLRF	LATB, ACCESS
+					BTFSC	ADDRESS_M_BUFFER_MATRIX_0, 6, ACCESS
+					BSF		LATB, aSI1, ACCESS
+					BTFSC	ADDRESS_M_BUFFER_MATRIX_1, 6, ACCESS
+					BSF		LATB, aSI2, ACCESS
+					BTFSC	ADDRESS_M_BUFFER_MATRIX_2, 6, ACCESS
+					BSF		LATB, aSI3, ACCESS
+					BTFSC	ADDRESS_M_BUFFER_MATRIX_3, 6, ACCESS
+					BSF		LATB, aSI4, ACCESS
+					BTFSC	ADDRESS_M_BUFFER_MATRIX_4, 6, ACCESS
+					BSF		LATB, aSI5, ACCESS
+					BTFSC	ADDRESS_M_BUFFER_MATRIX_5, 6, ACCESS
+					BSF		LATB, aSI6, ACCESS
+					BTFSC	ADDRESS_M_BUFFER_MATRIX_6, 6, ACCESS
+					BSF		LATB, aSI7, ACCESS
+					//SCK clock 4SRs_0
+					BSF		LATD, aSCK, ACCESS
+					BCF		LATD, aSCK, ACCESS
+
+					CLRF	LATB, ACCESS
+					BTFSC	ADDRESS_M_BUFFER_MATRIX_0, 5, ACCESS
+					BSF		LATB, aSI1, ACCESS
+					BTFSC	ADDRESS_M_BUFFER_MATRIX_1, 5, ACCESS
+					BSF		LATB, aSI2, ACCESS
+					BTFSC	ADDRESS_M_BUFFER_MATRIX_2, 5, ACCESS
+					BSF		LATB, aSI3, ACCESS
+					BTFSC	ADDRESS_M_BUFFER_MATRIX_3, 5, ACCESS
+					BSF		LATB, aSI4, ACCESS
+					BTFSC	ADDRESS_M_BUFFER_MATRIX_4, 5, ACCESS
+					BSF		LATB, aSI5, ACCESS
+					BTFSC	ADDRESS_M_BUFFER_MATRIX_5, 5, ACCESS
+					BSF		LATB, aSI6, ACCESS
+					BTFSC	ADDRESS_M_BUFFER_MATRIX_6, 5, ACCESS
+					BSF		LATB, aSI7, ACCESS
+					//SCK clock 4SRs_0
+					BSF		LATD, aSCK, ACCESS
+					BCF		LATD, aSCK, ACCESS
+
+					CLRF	LATB, ACCESS
 					BTFSC	ADDRESS_M_BUFFER_MATRIX_0, 4, ACCESS
 					BSF		LATB, aSI1, ACCESS
 					BTFSC	ADDRESS_M_BUFFER_MATRIX_1, 4, ACCESS
@@ -168,6 +225,10 @@ void YourHighPriorityISRCode()	{
 					BSF		LATB, aSI4, ACCESS
 					BTFSC	ADDRESS_M_BUFFER_MATRIX_4, 4, ACCESS
 					BSF		LATB, aSI5, ACCESS
+					BTFSC	ADDRESS_M_BUFFER_MATRIX_5, 4, ACCESS
+					BSF		LATB, aSI6, ACCESS
+					BTFSC	ADDRESS_M_BUFFER_MATRIX_6, 4, ACCESS
+					BSF		LATB, aSI7, ACCESS
 					//SCK clock 4SRs_0
 					BSF		LATD, aSCK, ACCESS
 					BCF		LATD, aSCK, ACCESS
@@ -183,6 +244,10 @@ void YourHighPriorityISRCode()	{
 					BSF		LATB, aSI4, ACCESS
 					BTFSC	ADDRESS_M_BUFFER_MATRIX_4, 3, ACCESS
 					BSF		LATB, aSI5, ACCESS
+					BTFSC	ADDRESS_M_BUFFER_MATRIX_5, 3, ACCESS
+					BSF		LATB, aSI6, ACCESS
+					BTFSC	ADDRESS_M_BUFFER_MATRIX_6, 3, ACCESS
+					BSF		LATB, aSI7, ACCESS
 					//SCK clock 4SRs_1
 					BSF		LATD, aSCK, ACCESS
 					BCF		LATD, aSCK, ACCESS
@@ -198,6 +263,10 @@ void YourHighPriorityISRCode()	{
 					BSF		LATB, aSI4, ACCESS
 					BTFSC	ADDRESS_M_BUFFER_MATRIX_4, 2, ACCESS
 					BSF		LATB, aSI5, ACCESS
+					BTFSC	ADDRESS_M_BUFFER_MATRIX_5, 2, ACCESS
+					BSF		LATB, aSI6, ACCESS
+					BTFSC	ADDRESS_M_BUFFER_MATRIX_6, 2, ACCESS
+					BSF		LATB, aSI7, ACCESS
 					//SCK clock 4SRs_2
 					BSF		LATD, aSCK, ACCESS
 					BCF		LATD, aSCK, ACCESS
@@ -213,6 +282,10 @@ void YourHighPriorityISRCode()	{
 					BSF		LATB, aSI4, ACCESS
 					BTFSC	ADDRESS_M_BUFFER_MATRIX_4, 1, ACCESS
 					BSF		LATB, aSI5, ACCESS
+					BTFSC	ADDRESS_M_BUFFER_MATRIX_5, 1, ACCESS
+					BSF		LATB, aSI6, ACCESS
+					BTFSC	ADDRESS_M_BUFFER_MATRIX_6, 1, ACCESS
+					BSF		LATB, aSI7, ACCESS
 					//SCK clock 4SRs_3
 					BSF		LATD, aSCK, ACCESS
 					BCF		LATD, aSCK, ACCESS
@@ -228,6 +301,10 @@ void YourHighPriorityISRCode()	{
 					BSF		LATB, aSI4, ACCESS
 					BTFSC	ADDRESS_M_BUFFER_MATRIX_4, 0, ACCESS
 					BSF		LATB, aSI5, ACCESS
+					BTFSC	ADDRESS_M_BUFFER_MATRIX_5, 0, ACCESS
+					BSF		LATB, aSI6, ACCESS
+					BTFSC	ADDRESS_M_BUFFER_MATRIX_6, 0, ACCESS
+					BSF		LATB, aSI7, ACCESS
 					//SCK clock 4SRs_4
 					BSF		LATD, aSCK, ACCESS
 					BCF		LATD, aSCK, ACCESS
@@ -271,6 +348,8 @@ void YourHighPriorityISRCode()	{
 					MOVWF	ADDRESS_M_BUFFER_MATRIX_2, ACCESS
 					MOVWF	ADDRESS_M_BUFFER_MATRIX_3, ACCESS
 					MOVWF	ADDRESS_M_BUFFER_MATRIX_4, ACCESS
+					MOVWF	ADDRESS_M_BUFFER_MATRIX_5, ACCESS
+					MOVWF	ADDRESS_M_BUFFER_MATRIX_6, ACCESS
 			END:
 				_endasm
 	
@@ -311,12 +390,7 @@ void YourHighPriorityISRCode()	{
 			// Resetting variables is used, to just execute once the code inside the MENU (this is just for static frames)
 			if (iMenu == MAX_MENU){
 				iMenu = 0;
-				FIRST = 0;
-				SECOND = 0;
-				THIRD = 0;
-				FOURTH = 0;
-				FIFTH = 0;
-				SIXTH = 0;
+				booleanMenu = 0;
 			}		
 		}
 		else{

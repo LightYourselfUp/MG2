@@ -35,11 +35,16 @@ Comments:
 #define SI3 LATBbits.LATB2
 #define SI4 LATBbits.LATB3
 #define SI5 LATBbits.LATB4
+#define SI6 LATBbits.LATB5
+#define SI7 LATBbits.LATB6
 #define aSI1 0
 #define aSI2 1
 #define aSI3 2
 #define aSI4 3
 #define aSI5 4
+#define aSI6 5
+#define aSI7 6
+
 
 // Bootloader button definitoins
 #define BOOTLOADER_BUTTON	PORTAbits.RA2//PORTEbits.RE0
@@ -51,11 +56,12 @@ Comments:
 
 // Maximum values and reset definitions
 #define MAX_MENU	6
-#define MAX_NUM_PIXELS	25
-#define MAX_NUM_COLUMNS	5
+#define MAX_NUM_PIXELS	49
+#define MAX_NUM_COLUMNS	7
+#define MAX_NUM_ROWS	7
 #define MAX_NUM_GREYSCALE	255
-#define MAX_INDEX_G_BUFFER_GREYSCALE	24
-#define MAX_INDEX_M_BUFFER_MATRIX	4
+#define MAX_INDEX_G_BUFFER_GREYSCALE	48
+#define MAX_INDEX_M_BUFFER_MATRIX	6
 #define RESET_M_BUFFER_MATRIX	0xFF
 #define CHANGE_MODE_DELAY_MULTIPLIER	6
 
@@ -78,12 +84,14 @@ Comments:
 
 // Data memory addresses for ISR variables
 #define ADDRESS_G_BUFFER_GREYSCALE_0	0x00
-#define ADDRESS_M_BUFFER_MATRIX_0	0x19
-#define ADDRESS_M_BUFFER_MATRIX_1	0x1A
-#define ADDRESS_M_BUFFER_MATRIX_2	0x1B
-#define ADDRESS_M_BUFFER_MATRIX_3	0x1C
-#define ADDRESS_M_BUFFER_MATRIX_4	0x1D
-#define ADDRESS_G_PRE_BUFFER_GREYSCALE_0	0x25
+#define ADDRESS_M_BUFFER_MATRIX_0	0x31
+#define ADDRESS_M_BUFFER_MATRIX_1	0x32
+#define ADDRESS_M_BUFFER_MATRIX_2	0x33
+#define ADDRESS_M_BUFFER_MATRIX_3	0x34
+#define ADDRESS_M_BUFFER_MATRIX_4	0x35
+#define ADDRESS_M_BUFFER_MATRIX_5	0x36
+#define ADDRESS_M_BUFFER_MATRIX_6	0x37
+#define ADDRESS_G_PRE_BUFFER_GREYSCALE_0	0x60
 
 // Interrupt vector addresses for boatloader remapping 	
 #define REMAPPED_RESET_VECTOR_ADDRESS			0x1000
@@ -92,14 +100,14 @@ Comments:
 
 
 /* Extern variables *************************************************/
-extern near ram unsigned char gBufferGreyscale[25];	// Used to draw the information that we want to display in the matrix.
-extern near ram unsigned char mBufferMatrix[5];	// Buffered used to decode gBufferGreyscale brightness and send "firmware" PWM through SIx
+extern near ram unsigned char gBufferGreyscale[MAX_NUM_PIXELS];	// Used to draw the information that we want to display in the matrix.
+extern near ram unsigned char mBufferMatrix[MAX_NUM_ROWS];	// Buffered used to decode gBufferGreyscale brightness and send "firmware" PWM through SIx
 extern near ram unsigned char iGreyscale;	// Index used to control the brightness step for the "firmware" pwm
-extern near ram unsigned char gPreBufferGreyscale[25];	//Used to pre draw the information that we want to display in the matrix. 
 extern near ram unsigned char iMenu;	// Keeps the main MENU value
 extern near ram unsigned char iTimer1;	// Used to generate a forced delay between each time iMenu can be increment after pressing the bootloader button
-extern near ram unsigned char FIRST, SECOND, THIRD, FOURTH, FIFTH, SIXTH; // These variables are used as boolean to executed just once the corresponding MENU value
+extern near ram unsigned char booleanMenu; // These variables are used as boolean to executed just once the corresponding MENU value
 extern near ram unsigned char pwm;	// Controlled brightness with A/D conversion
+extern ram unsigned char gPreBufferGreyscale[MAX_NUM_PIXELS];	//Used to pre draw the information that we want to display in the matrix. 
 
 /* Functions prototypes *********************************************/
 void YourHighPriorityISRCode();

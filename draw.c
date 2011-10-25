@@ -32,7 +32,7 @@ signed char abs(signed char number);
 /* Delete Matrix function */
 void deleteMatrix(){
 unsigned char j;
-	for(j=0;j<25;j++){
+	for(j = 0; j < MAX_NUM_PIXELS; j++){
 		gPreBufferGreyscale[j]=0x00;
 	}
 }
@@ -40,7 +40,7 @@ unsigned char j;
 /* Draw point */
 void drawPoint(unsigned char x, unsigned char y, unsigned char brightness){
 
-	gPreBufferGreyscale[(x - 1) * 5 + y - 1] = gammaCorrection(brightness);
+	gPreBufferGreyscale[(x - 1) * MAX_NUM_ROWS + y - 1] = gammaCorrection(brightness);
 }
 
 /* Draw line based on Bressenham Algorithm */

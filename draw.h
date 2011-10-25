@@ -20,9 +20,9 @@ Comments:
 
 /* Definitions ******************************************************/
 #define INITIAL_COLUMN 0
-#define FINAL_COLUMN 4
+#define FINAL_COLUMN 7-1
 #define INITIAL_ROW 0
-#define FINAL_ROW 4
+#define FINAL_ROW 7-1
 
 
 extern volatile unsigned char gBuffer5x5[5];
