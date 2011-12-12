@@ -7,7 +7,7 @@ Compiler: MPLAB C18
 Processor: 18F4550
 Company: LightYourselUp
 Contact: we@lightyourselfup.com
-Comments: 
+Comments: Firmware version for 7x7 pixels table
 *********************************************************************/
 
 #ifndef MAIN_C
@@ -76,11 +76,15 @@ void main(void){
 	CMCON = 0x07;	// Comparators disabled 
 	
 	/* Natural interaction expansion port configuration	*/
-	TRISAbits.TRISA4 = 1;	// A4 Botton 3
-	TRISAbits.TRISA3 = 1;	// A3 Botton 2
-	TRISAbits.TRISA2 = 1;	// A2 Botton 1
-	TRISAbits.TRISA1 = 1;	// A1 Potentiometer 2
-	TRISAbits.TRISA0 = 1;	// A0 Potentiometer 1
+	//TRISAbits.TRISA4 = 1;	// A4 Botton 3
+	//TRISAbits.TRISA3 = 1;	// A3 Botton 2
+	//TRISAbits.TRISA2 = 1;	// A2 Botton 1
+	//TRISAbits.TRISA1 = 1;	// A1 Potentiometer 2
+	//TRISAbits.TRISA0 = 1;	// A0 Potentiometer 1
+
+	// Hunting random reset-nonstarting bug
+	TRISA = 0;
+	PORTA = 0; 
 
 	TRISB = 0;	// B0..B6	Serial input for the Shift Registers
 	TRISD = 0;	// D0..D3	Shift Registers control inputs: SCK, RCK, _SCL, _G
