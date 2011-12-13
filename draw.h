@@ -25,7 +25,7 @@ Comments:
 #define FINAL_ROW 7-1
 
 
-extern volatile unsigned char gBuffer5x5[5];
+extern volatile unsigned char gBuffer7x7[7];
 
 /* Functions prototypes *********************************************/
 
@@ -48,7 +48,9 @@ void drawSquare(unsigned char xBottom, unsigned char yBotton, unsigned char xTop
 //Draw a frame from content
 void drawFrame(rom unsigned char *frame);
 
-//Converts frames from 5bytes to 25 bytes
-void draw5x5to25(void);
+//Converts frames from 7bytes to 49 bytes
+void draw7x7to49(void);
 
+//Only to avoid collateral errors, will be delte when whole code is ported to 7x7
+void draw5x5to25(void);
 #endif //DRAW_H

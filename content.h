@@ -32,7 +32,7 @@ Comments:
 
 /* Extern variables *************************************************/
 extern rom const unsigned char letters[][5];
-extern rom const unsigned char numbers[][5];
+extern rom const unsigned char numbers[][7];
 extern rom const unsigned char invaders[][5];
 extern rom const unsigned char welcome[];
 extern rom const unsigned char BandC[];

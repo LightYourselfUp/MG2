@@ -15,7 +15,7 @@ Comments:
 #include "draw.h"
 
 /* Variables ********************************************************/
-volatile unsigned char gBuffer5x5[5] = {0x00,0x00,0x00,0x00,0x00};
+volatile unsigned char gBuffer7x7[7] = {0x00,0x00,0x00,0x00,0x00,0x00,0x00};
 
 
 /* Functions prototypes *********************************************/
@@ -131,11 +131,11 @@ else
 }
 
 /* This function allows to convert 5x5 frames[5] to gBufferGreyscale[25]; if a pixel is '1' his greyscale value is PWM (AN0) */
-void draw5x5to25(){
+void draw7x7to49(){
 	unsigned char i, j, k = 0;
 	for(i = INITIAL_ROW; i <= FINAL_ROW; i++){
 		for(j = INITIAL_COLUMN; j <= FINAL_COLUMN; j++){
-			if( ( ( gBuffer5x5[i] >> j ) & 1 ) == 1 ){
+			if( ( ( gBuffer7x7[i] >> j ) & 1 ) == 1 ){
 				gPreBufferGreyscale[k++] = pwm;
 				}
 			else{
@@ -149,7 +149,9 @@ void draw5x5to25(){
 void drawFrame(rom unsigned char *frame){
 	unsigned char i;
 	for ( i = INITIAL_ROW; i <= FINAL_ROW; i++ ){
-		gBuffer5x5[i] = *frame++;
+		gBuffer7x7[i] = *frame++;
 		}
-	draw5x5to25();
+	draw7x7to49();
 }
+
+void draw5x5to25(){}

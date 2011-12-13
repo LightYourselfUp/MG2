@@ -154,12 +154,10 @@ void main(void){
 	/* Main Loop */			
    	while(1) 
    	{
-			deleteMatrix();
+		for(i = 9; i > 0; i--){
+			drawFrame((rom unsigned char *)&numbers[i]);
 			Delay10KTCYx(250);
-
-			drawFrame((rom unsigned char *)&invaders[0]);
-			Delay10KTCYx(250);
-
+		}
 	}// End while
 
 CloseTimer0();

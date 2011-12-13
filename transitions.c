@@ -15,7 +15,8 @@ Comments:
 
 /* Variables ********************************************************/
 unsigned char gBufferTransition[5] = {0x00,0x00,0x00,0x00,0x00};
-
+/* Cartoon stone para que al medio migrar no de errores */
+unsigned char gBuffer5x5[5] = {0x00,0x00,0x00,0x00,0x00};
 
 /* Functions ********************************************************/
 /* Transition right to left */
