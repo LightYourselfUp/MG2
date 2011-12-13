@@ -99,9 +99,7 @@ rom const unsigned char invaders[][5] = {
 
 rom const unsigned char welcome[] = " LYU MOLA /";
 rom const unsigned char BandC[] = " BARCOS Y PERMUTAS /";
-rom const unsigned char MarcManel[] = " NATA I ALBERT VOUS ME MANQUEZ /";
 rom const unsigned char Llevadme[] = " LLEVADME A CASA /";
-rom const unsigned char Laborda[] = " LABORDA TIO BUENO HAZME TUYA /";
 rom const unsigned char Hazlo[] = " HAZLO O NO LO HAGAS PERO NO LO INTENTES /";
 rom const unsigned char Force[] = " MAY THE FORCE BE WITH YOU SON /";
 
