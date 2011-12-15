@@ -342,7 +342,7 @@ void YourHighPriorityISRCode()	{
 			RESET_ALL_M_BUFFER_MATRIX:
 		
 				//_asm
-					MOVLW	0xFF
+					MOVLW	RESET_M_BUFFER_MATRIX
 					MOVWF	ADDRESS_M_BUFFER_MATRIX_0, ACCESS
 					MOVWF	ADDRESS_M_BUFFER_MATRIX_1, ACCESS
 					MOVWF	ADDRESS_M_BUFFER_MATRIX_2, ACCESS
@@ -376,7 +376,7 @@ void YourHighPriorityISRCode()	{
 // at the same time iTimer1 is used as a delay between each time iMenu can be increment, in this way we avoid having unwanted bounce detections
 	if(PIR1bits.TMR1IF == 1){
 
-			// Trying to use A/D
+			// Reading A/D value
 			if (ADCON0bits.GO_DONE == AD_DONE){
 				pwm = ADRESH;
 				ADCON0bits.GO_DONE = AD_GO;
@@ -386,8 +386,8 @@ void YourHighPriorityISRCode()	{
 			if(BOOTLOADER_BUTTON == ON_BOOT_BUTTON){
 				iTimer1++;
 				iMenu++;
-			}//if
-			// Resetting variables is used, to just execute once the code inside the MENU (this is just for static frames)
+			}//endif
+			// Reset variables, used to execute just once the code inside the MENU (this is just for static frames)
 			if (iMenu == MAX_MENU){
 				iMenu = 0;
 				booleanMenu = 0;
