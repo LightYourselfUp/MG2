@@ -32,7 +32,7 @@ unsigned char ascii2MG(unsigned char convert){
 	}//end switch
 }
 
-/* Function to choose between differnt transitions */
+/* Function to choose between different transitions */
 void selectTransition(unsigned char char1, unsigned char char2, unsigned char trans){
 	switch(trans){
 		case TRANS_RIGHT_2_LEFT:
