@@ -28,7 +28,7 @@ Comments:
 
 //Transitions names definitions
 #define	TRANS_RIGHT_2_LEFT 0
-#define	TRANS_BUTTON_2_TOP 1
+#define	TRANS_BOTTOM_2_TOP 1
 
 /* Functions prototypes *********************************************/
 void scrollText(rom unsigned char *text, unsigned char transition);

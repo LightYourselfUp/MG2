@@ -153,7 +153,7 @@ void main(void){
 		/*	Main MENU includes the different modes that the table can show
 			Switching between menus is done using external button(RE0):
 		
-				0 - Fixed light dimmed with external control (NOT IMPLEMENTED)
+				0 - Fixed light dimmed with external control
 				1 - Slow square
 				2 - Slow chess board
 				3 - Message
@@ -239,8 +239,8 @@ void main(void){
 			/**************/
 			case 3:
 					if (FOURTH == 0){deleteMatrix(); (FOURTH = 1);}
-					knightRider(4);
-					//scrollText((rom unsigned char *)&Force[0], TRANS_RIGHT_2_LEFT);	
+					//knightRider(4);
+					scrollText((rom unsigned char *)&Nino[0], TRANS_RIGHT_2_LEFT);	
 					
 					break;
 

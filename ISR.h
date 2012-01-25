@@ -43,7 +43,12 @@ Comments:
 
 // Bootloader button definitoins
 #define BOOTLOADER_BUTTON	PORTAbits.RA2//PORTEbits.RE0
-#define ON_BOOT_BUTTON	0
+
+/*
+1: para interruptores normalmente cerrados
+0: para interruptores normalmente abiertos
+*/
+#define ON_BOOT_BUTTON	1 
 
 // A/D definitions
 #define AD_GO 1

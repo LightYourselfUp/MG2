@@ -40,7 +40,7 @@ void selectTransition(unsigned char char1, unsigned char char2, unsigned char tr
 			transRight2Left((rom unsigned char *)&letters[char1][0],(rom unsigned char *)&letters[char2][0]);
 
 			break;
-		case TRANS_BUTTON_2_TOP:
+		case TRANS_BOTTOM_2_TOP:
 			transButton2Top((rom unsigned char *)&letters[char1][0],(rom unsigned char *)&letters[char2][0]);
 			break;
 

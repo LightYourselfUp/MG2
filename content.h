@@ -41,6 +41,7 @@ extern rom const unsigned char Llevadme[];
 extern rom const unsigned char Laborda[];
 extern rom const unsigned char Hazlo[];
 extern rom const unsigned char Force[];
+extern rom const unsigned char Nino[];
 extern rom const unsigned char knightRiderKITT[][5];
 
 #endif

@@ -104,6 +104,7 @@ rom const unsigned char Llevadme[] = " LLEVADME A CASA /";
 rom const unsigned char Laborda[] = " LABORDA TIO BUENO HAZME TUYA /";
 rom const unsigned char Hazlo[] = " HAZLO O NO LO HAGAS PERO NO LO INTENTES /";
 rom const unsigned char Force[] = " MAY THE FORCE BE WITH YOU SON /";
+rom const unsigned char Nino[] = " NINO VIVE /";
 
 /* KNIGHT RIDER KITT */
 
