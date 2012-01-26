@@ -90,10 +90,13 @@ void main(void){
 	_SCL = 1;	// Disable Shift Register _SCL (Global Clear)
 	_G = 0;		// Enables Shift Regusters outputs _G
 
-	//Resetting variables
-	for(i = 0; i <= MAX_INDEX_G_BUFFER_GREYSCALE; i++) {gBufferGreyscale[i] = 0; gPreBufferGreyscale[i] = 0;}
-	for(i = 0; i<= MAX_INDEX_M_BUFFER_MATRIX; i++) {mBufferMatrix[i] = RESET_M_BUFFER_MATRIX;}
-	iGreyscale = 0; iTimer1 = 0; iMenu = 0; FIRST = 0; SECOND = 0; THIRD = 0; FOURTH = 0; FIFTH = 0; SIXTH = 0; pwm = 0;
+	// Resetting variables
+	for (i = 0; i <= MAX_INDEX_G_BUFFER_GREYSCALE; i++) { gBufferGreyscale[i] = 0; gPreBufferGreyscale[i] = 0; }
+	for (i = 0; i <= MAX_INDEX_M_BUFFER_MATRIX; i++) { mBufferMatrix[i] = RESET_M_BUFFER_MATRIX; }
+	iGreyscale = 0; 
+	iTimer1 = 0; 
+	iMenu = 0;
+	FIRST = 0; SECOND = 0; THIRD = 0; FOURTH = 0; FIFTH = 0; SIXTH = 0; pwm = 0;
 
 	/* Timer 0 Configuration */
 	// Used to trigger the refresh matrix printed data routine
@@ -295,7 +298,8 @@ void main(void){
 						drawPoint(3,3,i);
 						if(iMenu != 5){break;}
 					}
-						if(iMenu != 5){break;}	// It allows to break the case during the executation	
+					
+					if(iMenu != 5){ break; }    // It allows to break the case during the executation	
 			
 					//SOLVES A BUG: because when TMR1F is called from this case, FIFTH is 
 					//reset but when we come back is set one because we are in case 4 not 1, 
