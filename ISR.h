@@ -108,6 +108,7 @@ extern near ram unsigned char iTimer1;	// Used to generate a forced delay betwee
 extern near ram unsigned char booleanMenu; // These variables are used as boolean to executed just once the corresponding MENU value
 extern near ram unsigned char pwm;	// Controlled brightness with A/D conversion
 extern ram unsigned char gPreBufferGreyscale[MAX_NUM_PIXELS];	//Used to pre draw the information that we want to display in the matrix. 
+extern near ram unsigned char FIRST, SECOND, THIRD, FOURTH, FIFTH, SIXTH; // These variables are used as boolean to execute just once the corresponding MENU use case
 
 /* Functions prototypes *********************************************/
 void YourHighPriorityISRCode();

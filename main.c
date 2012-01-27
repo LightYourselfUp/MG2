@@ -168,17 +168,48 @@ void main(void){
 		drawLine(7,1,7,7,pwm);	
 */
 
-
 		/******************************************************************/
 		/* 2 - Space invaders                                             */
 		/******************************************************************/
 		
-		
+        if (FIFTH == 0) { 
+            deleteMatrix();
+            (FIFTH = 1); 
+        }
+        
+        for (i = 1; i <= INVADERS_PAIR_REPETITIONS; i++) {
+            drawFrame((rom unsigned char *)&invaders[0]);
+            Delay10KTCYx(DELAY_INVADERS);
+            if(iMenu != 4){break;}
+            drawFrame((rom unsigned char *)&invaders[1]);
+            Delay10KTCYx(DELAY_INVADERS);
+            if(iMenu != 4){break;}
+        } // end for
+        
+        for (i = 1; i <= INVADERS_PAIR_REPETITIONS; i++) {
+            drawFrame((rom unsigned char *)&invaders[2]);
+            Delay10KTCYx(DELAY_INVADERS);
+            if(iMenu != 4){break;}
+            drawFrame((rom unsigned char *)&invaders[3]);
+            Delay10KTCYx(DELAY_INVADERS);
+            if(iMenu != 4){break;}
+        } // end for
+        
+        for (i = 1; i <= INVADERS_PAIR_REPETITIONS; i++) {
+            drawFrame((rom unsigned char *)&invaders[4]);
+            Delay10KTCYx(DELAY_INVADERS);
+            if(iMenu != 4){break;}
+            drawFrame((rom unsigned char *)&invaders[5]);
+            Delay10KTCYx(DELAY_INVADERS);
+            if(iMenu != 4){break;}
+        } // end for
+    
+        break;
 
+	} // End while
 
-	}// End while
-
-CloseTimer0();
-CloseTimer1();
-}//end main
+    CloseTimer0();
+    CloseTimer1();
+    
+} // end main
 #endif
