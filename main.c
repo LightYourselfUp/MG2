@@ -158,6 +158,7 @@ void main(void){
 		/******************************************************************/
 		/* 0 - Fixed light dimmed with external control                   */
 		/******************************************************************/
+/*
 		drawLine(1,1,1,7,pwm);	//dirty way to draw the all pixels at the same time
 		drawLine(2,1,2,7,pwm);
 		drawLine(3,1,3,7,pwm);
@@ -165,6 +166,15 @@ void main(void){
 		drawLine(5,1,5,7,pwm);
 		drawLine(6,1,6,7,pwm);
 		drawLine(7,1,7,7,pwm);	
+*/
+
+
+		/******************************************************************/
+		/* 2 - Space invaders                                             */
+		/******************************************************************/
+		
+		
+
 
 	}// End while
 
